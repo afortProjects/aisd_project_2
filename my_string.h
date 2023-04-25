@@ -40,6 +40,7 @@ public:
     friend std::ostream& operator<<(std::ostream& cout, const myString& obj);
 
     void removeSpacesFromBeginningAndEndFromString();
+    void reverse();
 
     bool checkIfListIsNotEmpty();
 

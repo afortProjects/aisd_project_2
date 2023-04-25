@@ -128,6 +128,14 @@ void myString::removeSpacesFromBeginningAndEndFromString() {
     *this = newStr;
 }
 
+void myString::reverse() {
+    for (size_t i = 0, j = size - 1; i < j; ++i, --j) {
+        char temp = this->buffer[i];
+        this->buffer[i] = this->buffer[j];
+        this->buffer[j] = temp;
+    }
+}
+
 int const myString::amountOfComasInString() {
     int counter = 0;
     for (size_t i = 0; i < length(); i++) {
