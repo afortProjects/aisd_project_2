@@ -1,6 +1,11 @@
 #include <iostream>
 #include "graph_parser.h"
 
+GraphParser::GraphParser() {
+	this->h = 0;
+	this->w = 0;
+}
+
 GraphParser::GraphParser(myVector<myVector<char>>& newBoard, int newW, int newH) : w(newW), h(newH) {
 	this->board = newBoard;
 	for (size_t i = 0; i < h; i++) {
@@ -10,6 +15,10 @@ GraphParser::GraphParser(myVector<myVector<char>>& newBoard, int newW, int newH)
 		}
 		this->visitedArray.push_back(tempVector);
 	}
+}
+
+void GraphParser::convertToGraph() {
+
 }
 
 void GraphParser::printVisitedArray() {

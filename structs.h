@@ -33,3 +33,10 @@ struct City {
 		return os;
 	}
 };
+
+struct CityNode {
+	CityNode* prev;
+	CityNode* next;
+	City city;
+	int cost;
+};
