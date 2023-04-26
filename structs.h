@@ -40,3 +40,13 @@ struct CityNode {
 	City city;
 	int cost;
 };
+
+template<typename T> struct Pair {
+	T firstValue;
+	T secondValue;
+
+	Pair(T _firstValue, T _secondValue) {
+		this->firstValue = _firstValue;
+		this->_secondValue = secondValue;
+	}
+};

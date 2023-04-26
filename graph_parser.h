@@ -5,7 +5,7 @@
 class GraphParser {
 public:
 	int w, h;
-	myVector<DoubleLinkedList<CityNode>> graph;
+	myVector<myVector<CityNode>> graph;
 	myVector<myVector<bool>> visitedArray;
 	myVector<myVector<char>> board;
 
