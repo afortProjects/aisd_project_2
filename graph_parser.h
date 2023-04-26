@@ -5,17 +5,31 @@
 class GraphParser {
 public:
 	int w, h;
-	myVector<myVector<CityNode>> graph;
-	myVector<myVector<bool>> visitedArray;
+	myVector<myVector<int>> shortestPaths;
+	myVector<myVector<int>> graph;
+	myVector<myVector<int>> visitedArray;
 	myVector<myVector<char>> board;
+	myVector<City> cities;
 
 	GraphParser();
 
-	GraphParser(myVector<myVector<char>>& board, int w, int h);
+	GraphParser(myVector<myVector<char>>& board, myVector<City> cities, int w, int h);
+
+	void fillVisitedArrayWithZeros();
+
+	int bfs(City& source, City& destination);
 
 	void convertToGraph();
+
+	int minDistance(myVector<int>& distances, myVector<int>& visitedArr);
+
+	void djikstra();
 
 	void printBoard();
 
 	void printVisitedArray();
+
+	void printGraph();
+
+	void printGraphAfterDjikstra();
 };

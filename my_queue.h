@@ -19,6 +19,10 @@ public:
 		return this->data.getSize();
 	}
 
+	bool isEmpty() {
+		return this->data.getSize() == 0 ? true : false;
+	}
+
 	friend std::ostream& operator<<(std::ostream& os, const myQueue& obj) {
 		os << obj.data;
 		return os;

@@ -13,6 +13,12 @@ int main() {
 	inputParser.getBoard();
 	inputParser.getCities();
 	inputParser.prepareBoard();
-	GraphParser graphParser = {inputParser.board, inputParser.w, inputParser.h};
-	graphParser.printBoard();
+
+	GraphParser graphParser = {inputParser.board, inputParser.cities, inputParser.w, inputParser.h};
+	graphParser.convertToGraph();
+	graphParser.djikstra();
+
+	graphParser.printGraph();
+	cout << graphParser.cities << endl;
+	graphParser.printGraphAfterDjikstra();
 }

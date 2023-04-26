@@ -45,8 +45,13 @@ template<typename T> struct Pair {
 	T firstValue;
 	T secondValue;
 
+	Pair() {
+		this->firstValue = 0;
+		this->secondValue = 0;
+	}
+
 	Pair(T _firstValue, T _secondValue) {
 		this->firstValue = _firstValue;
-		this->_secondValue = secondValue;
+		this->secondValue = _secondValue;
 	}
 };
