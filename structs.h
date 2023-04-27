@@ -54,4 +54,27 @@ template<typename T> struct Pair {
 		this->firstValue = _firstValue;
 		this->secondValue = _secondValue;
 	}
+
+	bool operator!=(const Pair& obj) {
+		if (this->firstValue == obj.firstValue && this->secondValue == obj.secondValue) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	friend std::ostream& operator<<(std::ostream& os, const Pair& obj) {
+		os << obj.firstValue << " " << obj.secondValue;
+		return os;
+	}
+};
+
+struct Node {
+	int x, y;
+	myString path = "";
+	Node() {};
+	Node(int x, int y, myString path) : x(x), y(y) {
+		this->path = path;
+	}
 };

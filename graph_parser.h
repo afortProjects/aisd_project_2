@@ -6,6 +6,7 @@ class GraphParser {
 public:
 	int w, h;
 	myVector<myVector<int>> shortestPaths;
+	myVector<myVector<myString>> shortestPathsCities;
 	myVector<myVector<int>> graph;
 	myVector<myVector<int>> visitedArray;
 	myVector<myVector<char>> board;
@@ -17,13 +18,19 @@ public:
 
 	void fillVisitedArrayWithZeros();
 
+	myString findCity(int i, int j);
+
 	int bfs(City& source, City& destination);
+
+	myString bfsPaths(City& source, City& destination);
 
 	void convertToGraph();
 
 	int minDistance(myVector<int>& distances, myVector<int>& visitedArr);
 
 	void djikstra();
+
+	void printPath(myVector<int> parent, int j);
 
 	void printBoard();
 
@@ -32,4 +39,6 @@ public:
 	void printGraph();
 
 	void printGraphAfterDjikstra();
+
+	void printPaths();
 };

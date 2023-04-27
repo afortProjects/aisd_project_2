@@ -1,6 +1,6 @@
 #include "input_parser.h"
 
-void InputParser::getBoard() {
+void InputParser::getData() {
 	std::cin >> w >> h;
 	char inputCharacter;
 	for (size_t i = 0; i < h; i++) {
@@ -11,6 +11,13 @@ void InputParser::getBoard() {
 		}
 		board.push_back(tempVector);
 	}
+	//std::cin >> amountOfFlights;
+	//TODO: Implement
+	//for (size_t i = 0; i < this->amountOfFlights; i++) {
+	//	
+	//}
+
+		
 }
 
 void InputParser::getCityName(int i, int j) {

@@ -10,15 +10,18 @@
 using namespace std;
 int main() {
 	InputParser inputParser;
-	inputParser.getBoard();
+	inputParser.getData();
 	inputParser.getCities();
 	inputParser.prepareBoard();
 
 	GraphParser graphParser = {inputParser.board, inputParser.cities, inputParser.w, inputParser.h};
 	graphParser.convertToGraph();
-	graphParser.djikstra();
+	//graphParser.djikstra();
 
 	graphParser.printGraph();
-	cout << graphParser.cities << endl;
-	graphParser.printGraphAfterDjikstra();
+	cout << endl;
+	//graphParser.printGraphAfterDjikstra();
+	graphParser.printPaths();
+	cout << graphParser.cities;
+	//cout << graphParser.shortestPathsCities[6][0];
 }

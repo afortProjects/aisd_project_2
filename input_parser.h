@@ -5,11 +5,11 @@
 #include "my_string.h"
 class InputParser {
 public:
-	int w, h;
+	int w, h, amountOfFlights;
 	myVector<myVector<char>> board;
 	myVector<City> cities;
 public:
-	void getBoard();
+	void getData();
 
 	void getCityName(int i, int j);
 

@@ -1,6 +1,6 @@
 #include "my_vector.h"
 template<typename T> class myQueue {
-private:
+public:
 	myVector<T> data;
 public:
 	myQueue() {}
