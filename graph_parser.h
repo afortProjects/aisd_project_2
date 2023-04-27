@@ -22,15 +22,11 @@ public:
 
 	int bfs(City& source, City& destination);
 
-	myString bfsPaths(City& source, City& destination);
-
 	void convertToGraph();
 
 	int minDistance(myVector<int>& distances, myVector<int>& visitedArr);
 
 	void djikstra();
-
-	void printPath(myVector<int> parent, int j);
 
 	void printBoard();
 

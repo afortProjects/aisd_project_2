@@ -16,12 +16,12 @@ int main() {
 
 	GraphParser graphParser = {inputParser.board, inputParser.cities, inputParser.w, inputParser.h};
 	graphParser.convertToGraph();
-	//graphParser.djikstra();
+	graphParser.djikstra();
 
 	graphParser.printGraph();
-	cout << endl;
-	//graphParser.printGraphAfterDjikstra();
-	graphParser.printPaths();
-	cout << graphParser.cities;
+	//cout << endl;
+	graphParser.printGraphAfterDjikstra();
+	//graphParser.printPaths();
+	cout << graphParser.shortestPathsCities[0][6];
 	//cout << graphParser.shortestPathsCities[6][0];
 }
