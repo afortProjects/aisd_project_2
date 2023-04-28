@@ -1,30 +1,34 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "input_parser.h"
 #include <cstdlib>
 
 void InputParser::getBoard() {
-	std::cin >> w >> h;
 	char inputCharacter;
+	scanf("%d%d", &w, &h);
+	inputCharacter = getchar();
+
 	for (size_t i = 0; i < h; i++) {
 		myVector<char> tempVector;
 		for (size_t j = 0; j < w; j++) {
-			std::cin >> inputCharacter;
+			inputCharacter = getchar();
 			tempVector.push_back(inputCharacter);
 		}
+		inputCharacter = getchar();
 		board.push_back(tempVector);
 	}
 }
 
 void InputParser::getFlights() {
-	std::cin >> amountOfFlights;
+	scanf("%d", &amountOfFlights);
+	getchar();
+
 	myString temp = "";
 	myString tempSource = "";
 	myString tempDestination = "";
 	int cost = 0;
 	char character;
 
-	// To skip first \n
-	getchar();
-	for (size_t i = 0; i < this->amountOfFlights; i++) {
+	for (size_t i = 0; i < amountOfFlights; i++) {
 		temp = "";
 		tempSource = "";
 		tempDestination = "";
@@ -47,15 +51,15 @@ void InputParser::getFlights() {
 }
 
 void InputParser::getQueries() {
-	std::cin >> amountOfQueries;
+	scanf("%d", &amountOfQueries);
+	getchar();
+
 	myString temp = "";
 	myString tempSource = "";
 	myString tempDestination = "";
 	int choice = 0;
 	char character;
 
-	// To skip first \n
-	getchar();
 	for (size_t i = 0; i < this->amountOfQueries; i++) {
 		temp = "";
 		tempSource = "";

@@ -90,12 +90,13 @@ void GraphParser::convertToGraph() {
 
 
 void GraphParser::includeFlights() {
+	//TODO: CHECK
 	int flightCost;
 	for (size_t i = 0; i < cities.getSize(); i++) {
 		for (size_t j = 0; j < cities.getSize(); j++) {
 			if (i != j) {
 				flightCost = getCostOfFlight(cities[i].name, cities[j].name);
-				if (flightCost != INT_MAX && (flightCost < graph[i][j] || (graph[i][j] == 0)))
+				if (flightCost != INT_MAX && (flightCost < graph[j][i] || (graph[i][j] == 0)))
 					graph[j][i] = flightCost;
 			}
 			else

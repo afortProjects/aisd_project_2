@@ -12,7 +12,6 @@ using namespace std;
 int main() {
 	InputParser inputParser;
 	inputParser.getData();
-	//inputParser.prepareBoard();
 
 	GraphParser graphParser = {inputParser.board, inputParser.cities, inputParser.flights, inputParser.w, inputParser.h};
 	graphParser.convertToGraph();
@@ -24,6 +23,9 @@ int main() {
 
 	ResultParser resultParser = { inputParser.queries, graphParser.cities, graphParser.shortestPathsCities, graphParser.shortestPaths };
 	resultParser.printOutput();
+ 	//cout << inputParser.cities<<endl;
+	//inputParser.printBoard();
+	//graphParser.printGraph();
 	//cout << inputParser.cities;
 	//graphParser.printGraph();
 	//graphParser.printGraphAfterDjikstra();
