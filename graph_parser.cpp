@@ -122,8 +122,8 @@ void GraphParser::djikstra() {
 	int citiesSize = this->cities.getSize();
 	int minDist;
 	myString temp;
+	fillVisitedArrayWithZeros();
 	for (size_t i = 0; i < citiesSize; i++) {
-		fillVisitedArrayWithZeros();
 		myVector<int> distances;
 		myVector<myString> shortestPath;
 		myString temp = "";
