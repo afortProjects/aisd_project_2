@@ -54,13 +54,14 @@ int GraphParser::bfs(City& source, City& destination) {
 				int newX = queueFirstElementIndexI + directions[i][0];
 				int newY = queueFirstElementIndexJ + directions[i][1];
 
-				if (newX >= 0 && newY >= 0 && newX < this->h && newY < this->w && (this->board[newX][newY] == '1') && this->visitedArray[newX][newY] == 0) {
-					queue.addElementToQueue(Pair<int>(newX, newY));
-					this->visitedArray[newX][newY] = 1;
-				}
-				else if (this->board[newX][newY] == '2' && newX == destination.index.i && newY == destinationY) {
-					return steps+1;
-
+				if (newX >= 0 && newY >= 0 && newX < this->h && newY < this->w) {
+					if ((this->board[newX][newY] == '1') && this->visitedArray[newX][newY] == 0) {
+						queue.addElementToQueue(Pair<int>(newX, newY));
+						this->visitedArray[newX][newY] = 1;
+					}
+					else if (newX >= 0 && newY >= 0 && newX < this->h && newY < this->w && this->board[newX][newY] == '2' && newX == destination.index.i && newY == destinationY) {
+						return steps + 1;
+					}
 				}
 			}
 		}

@@ -11,17 +11,18 @@ using namespace std;
 int main() {
 	InputParser inputParser;
 	inputParser.getData();
-	inputParser.getCities();
+	/*inputParser.getCities();
 	inputParser.prepareBoard();
 
 	GraphParser graphParser = {inputParser.board, inputParser.cities, inputParser.w, inputParser.h};
 	graphParser.convertToGraph();
 	graphParser.djikstra();
 
-	graphParser.printGraph();
+	graphParser.printGraph();*/
 	//cout << endl;
-	graphParser.printGraphAfterDjikstra();
+	//graphParser.printGraphAfterDjikstra();
 	//graphParser.printPaths();
-	cout << graphParser.shortestPathsCities[0][6];
+	//parse flights, change graphs, calculate djikstra
+	//cout << graphParser.shortestPathsCities[0][6];
 	//cout << graphParser.shortestPathsCities[6][0];
 }

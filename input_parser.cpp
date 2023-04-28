@@ -1,6 +1,7 @@
 #include "input_parser.h"
 
-void InputParser::getData() {
+
+void InputParser::getBoard() {
 	std::cin >> w >> h;
 	char inputCharacter;
 	for (size_t i = 0; i < h; i++) {
@@ -11,13 +12,49 @@ void InputParser::getData() {
 		}
 		board.push_back(tempVector);
 	}
-	//std::cin >> amountOfFlights;
-	//TODO: Implement
-	//for (size_t i = 0; i < this->amountOfFlights; i++) {
-	//	
-	//}
+}
 
-		
+void InputParser::getFlights() {
+	std::cin >> amountOfFlights;
+	myString temp = "";
+	myString tempSource = "";
+	myString tempDestination = "";
+	int cost = 0;
+	char character;
+
+	// To skip first \n
+	getchar();
+	for (size_t i = 0; i < this->amountOfFlights; i++) {
+		temp = "";
+		tempSource = "";
+		tempDestination = "";
+		cost = 0;
+		character = getchar();
+
+		while (character != '\n') {
+			if (character == ' ') {
+				if (tempSource.length() == 0) tempSource = temp;
+				else if (tempDestination.length() == 0) tempDestination = temp;
+				temp = "";
+			}
+			else
+				temp += character;
+			character = getchar();
+		}
+		cost = atoi(temp.str());
+		this->flights.push_back(Flight(tempSource, tempDestination, cost));
+	}
+}
+
+void InputParser::getQueries() {
+	
+}
+
+void InputParser::getData() {
+	getBoard();
+	getFlights();
+	getQueries();
+	getCities();
 }
 
 void InputParser::getCityName(int i, int j) {
@@ -39,7 +76,7 @@ void InputParser::getCityName(int i, int j) {
 				cityName += this->board[a][b];
 
 				//We have a first character, now we need to check, in which direction it goes
-				if (isalpha(this->board[a][b - 1])) {
+				if (b > 0 && isalpha(this->board[a][b - 1])) {
 					//Check if we really took last/first letter
 					if (b < this->w - 1 && (isalpha(this->board[a][b + 1]) || isdigit(this->board[a][b+1]))) {
 						cityName = "";
@@ -57,7 +94,7 @@ void InputParser::getCityName(int i, int j) {
 					cityName.reverse();
 				}
 
-				else if (isalpha(this->board[a][b + 1]) || isdigit(this->board[a][b+1])) {
+				else if (b + 1 < this-> w && isalpha(this->board[a][b + 1]) || isdigit(this->board[a][b+1])) {
 					//Check if we really took last/first letter
 					if (b > 0 && (isalpha(this->board[a][b - 1]) || isdigit(this->board[a][b-1]))) {
 						cityName = "";

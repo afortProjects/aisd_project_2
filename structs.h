@@ -70,11 +70,23 @@ template<typename T> struct Pair {
 	}
 };
 
-struct Node {
-	int x, y;
-	myString path = "";
-	Node() {};
-	Node(int x, int y, myString path) : x(x), y(y) {
-		this->path = path;
+struct Flight {
+	myString source = "";
+	myString destination = "";
+	int cost;
+
+	Flight() {
+		this->cost = 0;
+	}
+
+	Flight(myString _source, myString _destination, int _cost) {
+		this->source = _source;
+		this->destination = _destination;
+		this->cost = _cost;
+	}
+
+	friend std::ostream& operator<<(std::ostream& os, const Flight& obj) {
+		os << obj.source << " " << obj.destination << obj.cost;
+		return os;
 	}
 };
