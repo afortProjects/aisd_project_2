@@ -14,12 +14,11 @@ GraphParser::GraphParser(myVector<myVector<char>>& newBoard, myVector<City>& new
 	fillVisitedArrayWithZeros();
 }
 
-myString GraphParser::findCity(int i, int j) {
+City GraphParser::findCity(int i, int j) {
 	for (size_t m = 0; m < this->cities.getSize(); m++) {
 		if (this->cities[m].index.i == i && this->cities[m].index.j == j)
-			return this->cities[m].name;
+			return this->cities[m];
 	}
-	return "";
 }
 
 int GraphParser::getCostOfFlight(myString& firstCityName, myString& secondCityName) {
@@ -58,53 +57,14 @@ myVector<int> GraphParser::bfs(City& source) {
 						queue.addElementToQueue(Node(newX, newY, currentElement.distance + 1));
 						this->visitedArray[newX][newY] = 1;
 					}
-					else if (this->board[newX][newY] == '2') {
-						distances[counter] = (currentElement.distance+1);
-						counter++;
+					else if (this->board[newX][newY] == '2' && newX != source.index.i && newY != source.index.j) {
+						distances[findCity(newX,newY).indexInCityVector] = (currentElement.distance + 1);
+						this->visitedArray[newX][newY] = 1;
 					}
 				}
 		}
 	}
 	return distances;
-}
-
-int GraphParser::bfs(City& source, City& destination) {
-	int directions[4][2] = { {0, 1}, {0, -1}, {1, 0}, {-1, 0} };
-	int steps = 0;
-	myQueue<Pair<int>> queue;
-
-	fillVisitedArrayWithZeros();
-	int destinationX = destination.index.i, destinationY = destination.index.j;
-
-	queue.addElementToQueue(Pair<int>(source.index.i, source.index.j));
-	this->visitedArray[source.index.i][source.index.j] = 1;
-
-	while (!queue.isEmpty()) {
-		int size = queue.getSize();
-		while (size--) {
-			Pair<int> currentElement = queue.getElementFromQueue();
-			int queueFirstElementIndexI = currentElement.firstValue;
-			int queueFirstElementIndexJ = currentElement.secondValue;
-
-			for (size_t i = 0; i < 4; i++) {
-				int newX = queueFirstElementIndexI + directions[i][0];
-				int newY = queueFirstElementIndexJ + directions[i][1];
-
-				if (newX >= 0 && newY >= 0 && newX < this->h && newY < this->w) {
-					if ((this->board[newX][newY] == '1') && this->visitedArray[newX][newY] == 0) {
-						queue.addElementToQueue(Pair<int>(newX, newY));
-						this->visitedArray[newX][newY] = 1;
-					}
-					else if (newX >= 0 && newY >= 0 && newX < this->h && newY < this->w && this->board[newX][newY] == '2' && newX == destination.index.i && newY == destinationY) {
-						return steps + 1;
-					}
-				}
-			}
-		}
-		steps++;
-	}
-	return 0;
-
 }
 
 void GraphParser::fillVisitedArrayWithZeros() {
@@ -124,36 +84,8 @@ void GraphParser::convertToGraph() {
 	myString path = "";
 	for (size_t i = 0; i < cities.getSize(); i++) {
 		this->graph.push_back(bfs(this->cities[i]));
-		/*myVector<int> tempVector;
-		for (size_t j = 0; j < cities.getSize(); j++) {
-			if (i == j)
-				tempVector.push_back(0);
-			else {
-				steps = bfs(this->cities[i], this->cities[j]);
-				tempVector.push_back(steps);
-			}
-		}
-		this->graph.push_back(tempVector);
-	}*/
 	}
 }
-
-//void GraphParser::convertToGraph() {
-//	int steps = 0;
-//	myString path = "";
-//	for (size_t i = 0; i < cities.getSize(); i++) {
-//		myVector<int> tempVector;
-//		for (size_t j = 0; j < cities.getSize(); j++) {
-//			if (i == j)
-//				tempVector.push_back(0);
-//			else {	
-//				steps = bfs(this->cities[i], this->cities[j]);
-//				tempVector.push_back(steps);
-//			}
-//		}
-//		this->graph.push_back(tempVector);
-//	}
-//}
 
 void GraphParser::includeFlights() {
 	int flightCost;
@@ -162,7 +94,7 @@ void GraphParser::includeFlights() {
 			if (i != j) {
 				flightCost = getCostOfFlight(cities[i].name, cities[j].name);
 				if (flightCost != INT_MAX && (flightCost < graph[i][j] || (graph[i][j] == 0)))
-					graph[i][j] = flightCost;
+					graph[j][i] = flightCost;
 			}
 			else
 				continue;
@@ -251,7 +183,11 @@ void GraphParser::printBoard() {
 void GraphParser::printGraphAfterDjikstra() {
 	for (size_t i = 0; i < this->cities.getSize(); i++) {
 		for (size_t j = 0; j < this->cities.getSize(); j++) {
-			std::cout << this->shortestPaths[i][j] << " ";
+			if(this->shortestPaths[i][j] != INT_MAX)
+				std::cout << this->shortestPaths[i][j] << " ";
+			else
+				std::cout << 0 << " ";
+
 		}
 		std::cout << '\n';
 	}

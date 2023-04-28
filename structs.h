@@ -16,6 +16,7 @@ struct Index {
 };
 
 struct City {
+	size_t indexInCityVector;
 	Index index;
 	myString name = "";
 
@@ -23,9 +24,10 @@ struct City {
 
 	}
 
-	City(int i, int j, myString newName) {
+	City(int i, int j, myString newName, size_t newIndexInCityVector) {
 		index = Index(i, j);
 		name = newName;
+		indexInCityVector = newIndexInCityVector;
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const City& obj) {

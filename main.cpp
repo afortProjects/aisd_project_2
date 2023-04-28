@@ -16,9 +16,10 @@ int main() {
 	GraphParser graphParser = {inputParser.board, inputParser.cities, inputParser.flights, inputParser.w, inputParser.h};
 	graphParser.convertToGraph();
 	graphParser.includeFlights();
-	//graphParser.djikstra();
-	graphParser.printGraph();
-
+	graphParser.djikstra();
+	graphParser.printGraphAfterDjikstra();
+	//cout << graphParser.shortestPathsCities;
+	//graphParser.printGraph();
 	//cout << endl;
 	//graphParser.printGraphAfterDjikstra();
 	//graphParser.printPaths();

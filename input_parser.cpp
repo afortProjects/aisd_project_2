@@ -109,7 +109,7 @@ void InputParser::getCityName(int i, int j) {
 					}
 
 				}
-				City newCity = { i, j, cityName };
+				City newCity = { i, j, cityName, this->cities.getSize()};
 				this->cities.push_back(newCity);
 				return;
 			}

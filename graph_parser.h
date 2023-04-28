@@ -19,7 +19,7 @@ public:
 
 	void fillVisitedArrayWithZeros();
 
-	myString findCity(int i, int j);
+	City findCity(int i, int j);
 
 	myVector<int> bfs(City& source);
 
