@@ -1,5 +1,5 @@
 #include "input_parser.h"
-
+#include <cstdlib>
 
 void InputParser::getBoard() {
 	std::cin >> w >> h;

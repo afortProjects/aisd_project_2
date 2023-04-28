@@ -86,7 +86,23 @@ struct Flight {
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const Flight& obj) {
-		os << obj.source << " " << obj.destination << obj.cost;
+		os << obj.source << " " << obj.destination << " " << obj.cost;
 		return os;
+	}
+};
+
+struct Node {
+	int x, y, distance;
+
+	Node() {
+		this->x = 0;
+		this->y = 0;
+		this->distance = 0;
+	}
+
+	Node(int _x, int _y, int _distance) {
+		this->x = _x;
+		this->y = _y;
+		this->distance = _distance;
 	}
 };

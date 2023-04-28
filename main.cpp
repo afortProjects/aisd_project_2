@@ -11,14 +11,14 @@ using namespace std;
 int main() {
 	InputParser inputParser;
 	inputParser.getData();
-	/*inputParser.getCities();
 	inputParser.prepareBoard();
 
-	GraphParser graphParser = {inputParser.board, inputParser.cities, inputParser.w, inputParser.h};
+	GraphParser graphParser = {inputParser.board, inputParser.cities, inputParser.flights, inputParser.w, inputParser.h};
 	graphParser.convertToGraph();
-	graphParser.djikstra();
+	graphParser.includeFlights();
+	//graphParser.djikstra();
+	graphParser.printGraph();
 
-	graphParser.printGraph();*/
 	//cout << endl;
 	//graphParser.printGraphAfterDjikstra();
 	//graphParser.printPaths();

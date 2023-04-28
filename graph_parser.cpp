@@ -7,9 +7,10 @@ GraphParser::GraphParser() {
 	this->w = 0;
 }
 
-GraphParser::GraphParser(myVector<myVector<char>>& newBoard, myVector<City> newCities, int newW, int newH) : w(newW), h(newH) {
+GraphParser::GraphParser(myVector<myVector<char>>& newBoard, myVector<City>& newCities, myVector<Flight>& newFlights, int newW, int newH) : w(newW), h(newH) {
 	this->board = newBoard;
 	this->cities = newCities;
+	this->flights = newFlights;
 	fillVisitedArrayWithZeros();
 }
 
@@ -21,24 +22,59 @@ myString GraphParser::findCity(int i, int j) {
 	return "";
 }
 
+int GraphParser::getCostOfFlight(myString& firstCityName, myString& secondCityName) {
+	for (size_t i = 0; i < flights.getSize(); i++) {
+		if (flights[i].destination == firstCityName && flights[i].source == secondCityName)
+			return flights[i].cost;
+	}
+	return INT_MAX;
+}
+
+myVector<int> GraphParser::bfs(City& source) {
+	int directions[4][2] = { {0, 1}, {0, -1}, {1, 0}, {-1, 0} };
+	int counter = 0;
+	myQueue<Node> queue;
+	myVector<int> distances;
+	fillVisitedArrayWithZeros();
+
+	for (size_t i = 0; i < cities.getSize(); i++) {
+		distances.push_back(0);
+	}
+
+	queue.addElementToQueue(Node(source.index.i, source.index.j, 0));
+	this->visitedArray[source.index.i][source.index.j] = 1;
+
+	while (!queue.isEmpty()) {
+			Node currentElement = queue.getElementFromQueue();
+			int queueFirstElementIndexI = currentElement.x;
+			int queueFirstElementIndexJ = currentElement.y;
+
+			for (size_t i = 0; i < 4; i++) {
+				int newX = queueFirstElementIndexI + directions[i][0];
+				int newY = queueFirstElementIndexJ + directions[i][1];
+
+				if (newX >= 0 && newY >= 0 && newX < this->h && newY < this->w) {
+					if ((this->board[newX][newY] == '1') && this->visitedArray[newX][newY] == 0) {
+						queue.addElementToQueue(Node(newX, newY, currentElement.distance + 1));
+						this->visitedArray[newX][newY] = 1;
+					}
+					else if (this->board[newX][newY] == '2') {
+						distances[counter] = (currentElement.distance+1);
+						counter++;
+					}
+				}
+		}
+	}
+	return distances;
+}
 
 int GraphParser::bfs(City& source, City& destination) {
 	int directions[4][2] = { {0, 1}, {0, -1}, {1, 0}, {-1, 0} };
 	int steps = 0;
 	myQueue<Pair<int>> queue;
-	myVector<myVector<int>> paths;
-	
 
 	fillVisitedArrayWithZeros();
 	int destinationX = destination.index.i, destinationY = destination.index.j;
-
-	for (size_t i = 0; i < this->board.getSize(); i++) {
-		myVector<int> tempVector;
-		for (size_t j = 0; j < this->board[i].getSize(); j++) {
-			tempVector.push_back(0);
-		}
-		paths.push_back(tempVector);
-	}
 
 	queue.addElementToQueue(Pair<int>(source.index.i, source.index.j));
 	this->visitedArray[source.index.i][source.index.j] = 1;
@@ -87,7 +123,8 @@ void GraphParser::convertToGraph() {
 	int steps = 0;
 	myString path = "";
 	for (size_t i = 0; i < cities.getSize(); i++) {
-		myVector<int> tempVector;
+		this->graph.push_back(bfs(this->cities[i]));
+		/*myVector<int> tempVector;
 		for (size_t j = 0; j < cities.getSize(); j++) {
 			if (i == j)
 				tempVector.push_back(0);
@@ -97,6 +134,39 @@ void GraphParser::convertToGraph() {
 			}
 		}
 		this->graph.push_back(tempVector);
+	}*/
+	}
+}
+
+//void GraphParser::convertToGraph() {
+//	int steps = 0;
+//	myString path = "";
+//	for (size_t i = 0; i < cities.getSize(); i++) {
+//		myVector<int> tempVector;
+//		for (size_t j = 0; j < cities.getSize(); j++) {
+//			if (i == j)
+//				tempVector.push_back(0);
+//			else {	
+//				steps = bfs(this->cities[i], this->cities[j]);
+//				tempVector.push_back(steps);
+//			}
+//		}
+//		this->graph.push_back(tempVector);
+//	}
+//}
+
+void GraphParser::includeFlights() {
+	int flightCost;
+	for (size_t i = 0; i < cities.getSize(); i++) {
+		for (size_t j = 0; j < cities.getSize(); j++) {
+			if (i != j) {
+				flightCost = getCostOfFlight(cities[i].name, cities[j].name);
+				if (flightCost != INT_MAX && (flightCost < graph[i][j] || (graph[i][j] == 0)))
+					graph[i][j] = flightCost;
+			}
+			else
+				continue;
+		}
 	}
 }
 

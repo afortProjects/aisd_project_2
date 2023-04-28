@@ -10,19 +10,26 @@ public:
 	myVector<myVector<int>> graph;
 	myVector<myVector<int>> visitedArray;
 	myVector<myVector<char>> board;
+	myVector<Flight> flights;
 	myVector<City> cities;
 
 	GraphParser();
 
-	GraphParser(myVector<myVector<char>>& board, myVector<City> cities, int w, int h);
+	GraphParser(myVector<myVector<char>>& board, myVector<City>& cities, myVector<Flight>& flights, int w, int h);
 
 	void fillVisitedArrayWithZeros();
 
 	myString findCity(int i, int j);
 
+	myVector<int> bfs(City& source);
+
 	int bfs(City& source, City& destination);
 
 	void convertToGraph();
+	
+	int getCostOfFlight(myString& firstCityName, myString& secondCityName);
+
+	void includeFlights();
 
 	int minDistance(myVector<int>& distances, myVector<int>& visitedArr);
 
