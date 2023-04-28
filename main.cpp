@@ -7,18 +7,32 @@
 #include "structs.h"
 #include "input_parser.h"
 #include "graph_parser.h"
+#include "result_parser.h"
 using namespace std;
 int main() {
 	InputParser inputParser;
 	inputParser.getData();
-	inputParser.prepareBoard();
+	//inputParser.prepareBoard();
 
 	GraphParser graphParser = {inputParser.board, inputParser.cities, inputParser.flights, inputParser.w, inputParser.h};
 	graphParser.convertToGraph();
-	graphParser.includeFlights();
+
+	if(inputParser.flights.getSize() != 0)
+		graphParser.includeFlights();
+
 	graphParser.djikstra();
-	graphParser.printGraphAfterDjikstra();
-	//cout << graphParser.shortestPathsCities;
+
+	ResultParser resultParser = { inputParser.queries, graphParser.cities, graphParser.shortestPathsCities, graphParser.shortestPaths };
+	resultParser.printOutput();
+	//cout << inputParser.cities;
+	//graphParser.printGraph();
+	//graphParser.printGraphAfterDjikstra();
+	//for (size_t i = 0; i < inputParser.cities.getSize(); i++) {
+	//	if (inputParser.cities[i].name == "DD") cout << graphParser.shortestPaths[i];
+	//}
+	//inputParser.printBoard();
+
+	//cout << graphParser.shortestPathsCities[0][];
 	//graphParser.printGraph();
 	//cout << endl;
 	//graphParser.printGraphAfterDjikstra();

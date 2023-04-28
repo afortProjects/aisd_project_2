@@ -9,9 +9,7 @@ struct Index {
 		j = 0;
 	}
 
-	Index(int newI, int newJ) {
-		i = newI;
-		j = newJ;
+	Index(int& newI, int& newJ) : i(newI), j(newJ) {
 	}
 };
 
@@ -24,10 +22,7 @@ struct City {
 
 	}
 
-	City(int i, int j, myString newName, size_t newIndexInCityVector) {
-		index = Index(i, j);
-		name = newName;
-		indexInCityVector = newIndexInCityVector;
+	City(int i, int j, myString& newName, size_t newIndexInCityVector) : index(Index(i,j)), name(newName), indexInCityVector(newIndexInCityVector) {
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const City& obj) {
@@ -81,10 +76,7 @@ struct Flight {
 		this->cost = 0;
 	}
 
-	Flight(myString _source, myString _destination, int _cost) {
-		this->source = _source;
-		this->destination = _destination;
-		this->cost = _cost;
+	Flight(myString& _source, myString& _destination, int& _cost) : source(_source), destination(_destination), cost(_cost) {
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const Flight& obj) {
@@ -92,6 +84,25 @@ struct Flight {
 		return os;
 	}
 };
+
+struct Query {
+	myString source = "";
+	myString destination = "";
+	int choice;
+
+	Query() {
+		this->choice = 0;
+	}
+
+	Query(myString& _source, myString& _destination, int& _choice) : source(_source), destination(_destination), choice(_choice) {
+	}
+
+	friend std::ostream& operator<<(std::ostream& os, const Query& obj) {
+		os << obj.source << " " << obj.destination << " " << obj.choice;
+		return os;
+	}
+};
+
 
 struct Node {
 	int x, y, distance;
@@ -102,9 +113,6 @@ struct Node {
 		this->distance = 0;
 	}
 
-	Node(int _x, int _y, int _distance) {
-		this->x = _x;
-		this->y = _y;
-		this->distance = _distance;
+	Node(int _x, int _y, int _distance) : x(_x), y(_y), distance(_distance) {
 	}
 };

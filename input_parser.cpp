@@ -47,7 +47,35 @@ void InputParser::getFlights() {
 }
 
 void InputParser::getQueries() {
-	
+	std::cin >> amountOfQueries;
+	myString temp = "";
+	myString tempSource = "";
+	myString tempDestination = "";
+	int choice = 0;
+	char character;
+
+	// To skip first \n
+	getchar();
+	for (size_t i = 0; i < this->amountOfQueries; i++) {
+		temp = "";
+		tempSource = "";
+		tempDestination = "";
+		choice = 0;
+		character = getchar();
+
+		while (character != '\n') {
+			if (character == ' ') {
+				if (tempSource.length() == 0) tempSource = temp;
+				else if (tempDestination.length() == 0) tempDestination = temp;
+				temp = "";
+			}
+			else
+				temp += character;
+			character = getchar();
+		}
+		choice = atoi(temp.str());
+		this->queries.push_back(Query(tempSource, tempDestination, choice));
+	}
 }
 
 void InputParser::getData() {
@@ -94,7 +122,7 @@ void InputParser::getCityName(int i, int j) {
 					cityName.reverse();
 				}
 
-				else if (b + 1 < this-> w && isalpha(this->board[a][b + 1]) || isdigit(this->board[a][b+1])) {
+				else if (b + 1 < this->w && (isalpha(this->board[a][b + 1]) || isdigit(this->board[a][b + 1]))) {
 					//Check if we really took last/first letter
 					if (b > 0 && (isalpha(this->board[a][b - 1]) || isdigit(this->board[a][b-1]))) {
 						cityName = "";
@@ -124,6 +152,7 @@ void InputParser::getCities() {
 				getCityName(i, j);
 		}
 	}
+
 }
 
 void InputParser::prepareBoard() {
