@@ -30,7 +30,21 @@ myString& myString::operator=(const myString& other) {
     capacity = other.capacity;
     delete[] buffer;
     buffer = new char[capacity];
-    strcpy(buffer, other.buffer);
+    memcpy(buffer, other.buffer, size);
+    buffer[size] = '\0';
+    return *this;
+}
+
+myString& myString::operator=(const char* str) {
+    size_t strLength = strlen(str);
+    if (strLength + 1 > capacity) {
+        capacity = strLength + STRING_BUFFER;
+        char* newBuffer = new char[capacity];
+        delete[] buffer;
+        buffer = newBuffer;
+    }
+    memcpy(buffer, str, strLength + 1);
+    size = strLength;
     return *this;
 }
 
@@ -52,11 +66,11 @@ myString& myString::operator+=(const char& character) {
     if (size + 2 > capacity) {
         capacity += STRING_BUFFER;
         char* newBuffer = new char[capacity];
-        strcpy(newBuffer, buffer);
+        strcpy(newBuffer, buffer); // copy existing string to new buffer
         delete[] buffer;
         buffer = newBuffer;
     }
-    buffer[size++] = character;
+    buffer[size++] = character; // add character to end of string and update end pointer
     buffer[size] = '\0';
     return *this;
 }

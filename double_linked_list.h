@@ -72,7 +72,7 @@ public:
 
     bool checkIfListIsNotEmpty() {
         StructNode* temp = this->headNode;
-        while (temp != NULL) {
+        while (temp != nullptr) {
             if (temp->name.length() != 0) {
                 return false;
             }

@@ -18,6 +18,8 @@ public:
 
     myString& operator=(const myString& other);
 
+    myString& operator=(const char* str);
+
     myString& operator+=(const myString& other);
 
     myString& operator+=(const char& character);

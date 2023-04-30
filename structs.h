@@ -14,7 +14,7 @@ struct Index {
 };
 
 struct City {
-	size_t indexInCityVector;
+	size_t indexInCityVector=0;
 	Index index;
 	myString name = "";
 
@@ -26,7 +26,7 @@ struct City {
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const City& obj) {
-		os << obj.name << " " << obj.index.i<< " " << obj.index.j;
+		os << obj.name << " " << obj.index.i<< " " << obj.index.j << " " << obj.indexInCityVector << " ";
 		return os;
 	}
 };
@@ -68,15 +68,24 @@ template<typename T> struct Pair {
 };
 
 struct Flight {
-	myString source = "";
-	myString destination = "";
+	char* source;
+	char* destination;
 	int cost;
 
 	Flight() {
 		this->cost = 0;
 	}
 
-	Flight(myString& _source, myString& _destination, int& _cost) : source(_source), destination(_destination), cost(_cost) {
+	Flight(char* _source, char* _destination, int& _cost) : source(_source), destination(_destination), cost(_cost) {
+		//size_t length = strlen(_source) + 1;
+		//char* source_dest = new char[length];
+		//strcpy_s(source_dest, length, _source);
+		//this->source = source_dest;
+
+		//size_t length_d = strlen(_destination) + 1;
+		//char* destination_dest = new char[length_d];
+		//strcpy_s(destination_dest, length_d, _destination);
+		//this->destination = destination_dest;
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const Flight& obj) {
