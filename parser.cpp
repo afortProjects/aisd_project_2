@@ -1,6 +1,7 @@
 #include "parser.h"
 #include <iostream>
 #include <string>
+#include "consts.h"
 #define TABLE_SIZE 1000
 Parser::Parser() {
 	this->amountOfCities = 0;
@@ -35,37 +36,31 @@ void Parser::getFlights() {
 	for (int i = 0; i < amountOfFlights; i++) {
 		//tempSource = "";
 		//tempDestination = "";
-		myVector<char> tempSource;
-		myVector<char>tempDestination;
+		char* source = new char[64];
+		char* destination = new char[64];
+		int counter = 0;
+		//myVector<char>tempDestination;
 		int cost = 0;
 
 		char character = getchar();
 		while (character != ' ') {
-			tempSource.push_back(character);
+			source[counter] = character;
 			character = getchar();
+			counter++;
 		}
-
+		counter = 0;
 		character = getchar();
 		while (character != ' ') {
-			tempDestination.push_back(character);
+			destination[counter] = character;
 			character = getchar();
+			counter++;
 		}
 
 		scanf("%d", &cost);
 		getchar();
-		char* s = new char[tempSource.getSize()];
-		for (size_t i = 0; i < tempSource.getSize(); i++) {
-			s[i] = tempSource[i];
-		}
-
-		char* d = new char[tempDestination.getSize()];
-		for (size_t i = 0; i < tempDestination.getSize(); i++) {
-			d[i] = tempDestination[i];
-		}
-
-		////myString a(s);
-		//myString b(d);
-		flights.push_back(Flight(s, d, cost));
+		flights.push_back(Flight(source, destination, cost));
+		delete[] source;
+		delete[] destination;
 	}
 }
 void Parser::getQueries() {
@@ -103,65 +98,90 @@ void Parser::getQueries() {
 void Parser::getCityName(int i, int j) {
 	//Check where is first character
 	myString cityName = "";
+	//char* buffer = new char[STRING_BUFFER];
+	//char buffer[STRING_BUFFER];
+	//std::string cityName;
+	int counter = 0;
 	for (int a = i - 1; a <= i + 1; a++) {
 		for (int b = j - 1; b <= j + 1; b++) {
 
 			//Check if in board
-			if (a < 0 || a > h - 1 || b < 0 || b > w - 1)
+			if (a < 0 || a > h - 1 || b < 0 || b > w - 1) {
 				continue;
+			}
 
-			if (a == i && b == j)
+			if (a == i && b == j) {
 				continue;
+			}
 
 			if (isalpha(this->board[a][b]) || isdigit(this->board[a][b])) {
 
 				int counterX = b;
 				cityName += this->board[a][b];
-
+				//buffer[counter] = this->board[a][b];
+				counter++;
 				//We have a first character, now we need to check, in which direction it goes
 				if (b > 0 && isalpha(this->board[a][b - 1])) {
 					//Check if we really took last/first letter
 					if (b < this->w - 1 && (isalpha(this->board[a][b + 1]) || isdigit(this->board[a][b + 1]))) {
 						cityName = "";
+						//counter = 0;
 						continue;
 					}
 
 					counterX--;
 					while (isalpha(this->board[a][counterX]) || isdigit(this->board[a][counterX])) {
 						cityName += this->board[a][counterX];
+						//buffer[counter] = this->board[a][counterX];
+						counter++;
 						counterX--;
 						if (counterX < 0) break;
 
 					}
-
-					cityName.reverse();
+					//std::string.reverse();
+					/*int len = strlen(buffer);
+					for (int i = 0; i < len / 2; i++) {
+						char temp = buffer[i];
+						buffer[i] = buffer[len - 1 - i];
+						buffer[len - 1 - i] = temp;
+					}*/
 				}
 
 				else if (b + 1 < this->w && (isalpha(this->board[a][b + 1]) || isdigit(this->board[a][b + 1]))) {
 					//Check if we really took last/first letter
 					if (b > 0 && (isalpha(this->board[a][b - 1]) || isdigit(this->board[a][b - 1]))) {
+						//cityName = "";
 						cityName = "";
+						counter = 0;
 						continue;
 					}
 
 					counterX++;
 					while (isalpha(this->board[a][counterX]) || isdigit(this->board[a][counterX])) {
 						cityName += this->board[a][counterX];
+						//buffer[counter] = this->board[a][counterX];
 						counterX++;
+						counter++;
 						if (counterX > this->w - 1) break;
 					}
 
 				}
 				size_t c = amountOfCities;
-				City newCity = { i, j, cityName, c };
+				//buffer[counter] = '\0';
 				const char* a = cityName.str();
-				this->citiesHashMap.add(a, newCity);
+
+				City newCity = { i, j, a, c};
+				this->citiesHashMap.add(cityName.str(), newCity);
 				this->cities.push_back(newCity);
 				this->amountOfCities += 1;
 				return;
 			}
+
 		}
 	}
+	//delete[] buffer;
+
+
 }
 
 void Parser::getCities() {
@@ -178,7 +198,7 @@ void Parser::getCities() {
 void Parser::getData() {
 	getBoard();
 	getFlights();
-	getQueries();
+ 	getQueries();
 	getCities();
 }
 
@@ -208,8 +228,12 @@ myVector<int> Parser::bfs(City& source) {
 	myVector<int> distances;
 	int queueFirstElementIndexI;
 	int queueFirstElementIndexJ;
-	fillVisitedArrayWithZeros();
-
+	//fillVisitedArrayWithZeros();
+	for (size_t i = 0; i < this->visitedArray.getSize(); i++) {
+		for (size_t j = 0; j < this->visitedArray[i].getSize(); j++) {
+			this->visitedArray[i][j] = 0;
+		}
+	}
 	for (size_t i = 0; i < this->amountOfCities; i++) {
 		distances.push_back(0);
 	}
@@ -233,8 +257,9 @@ myVector<int> Parser::bfs(City& source) {
 				else if (this->board[newX][newY] == '*' && (newX != source.index.i || newY != source.index.j)) {
 					distances[findCity(newX, newY).indexInCityVector] = (currentElement.distance + 1);
 				}
-				this->visitedArray[newX][newY] = 1;
+				else continue;
 
+				this->visitedArray[newX][newY];
 			}
 		}
 	}
@@ -293,7 +318,7 @@ void Parser::djikstra() {
 					distances[secondCounter] = distances[minDist] + this->graph[minDist][secondCounter];
 					if (this->cities[minDist].name != this->cities[i].name) {
 						temp = shortestPath[minDist];
-						if (this->cities[minDist].name.length() != 0) {
+						if (strlen(this->cities[minDist].name) != 0) {
 							temp += this->cities[minDist].name;
 							temp += " ";
 						}

@@ -10,11 +10,15 @@ private:
 	Value value;
 	myHashNode* next;
 public:
-	myHashNode(const Key& _key, const Value& _value) : value(_value), next(NULL) {
-		size_t length = strlen(_key) + 1;
+	//myHashNode(const Key& _key, const Value& _value) : key(_key), value(_value), next(NULL) {
+	//};
+
+	myHashNode(const Key& _key, const Value& _value) : key(_key), value(_value), next(NULL) {
+	/*	size_t length = strlen(_key) + 1;
+		size_t size = STRING_BUFFER;
 		char* destination = new char[length];
 		strcpy_s(destination, length, _key);
-		this->key = destination;
+		this->key = destination;*/
 	};
 
 	//Getters

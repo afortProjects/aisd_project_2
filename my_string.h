@@ -2,6 +2,8 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "consts.h"
 #include "string.h"
+#include <cstdlib>
+#include <cstring>
 
 #include <iostream>
 

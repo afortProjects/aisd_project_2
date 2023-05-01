@@ -4,7 +4,7 @@
 #include "structs.h"
 #include "my_string.h"
 #include "my_queue.h"
-
+#include "double_linked_list.h"
 #include <iostream>
 
 class Parser {
@@ -20,6 +20,7 @@ public:
 	myVector<myVector<int>> graph;
 	myVector<myVector<int>> visitedArray;
 	myHashMap<const char*, City> citiesHashMap;
+	myVector<DoubleLinkedList<City>> graphList;
 public:
 	Parser();
 

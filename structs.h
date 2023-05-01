@@ -1,5 +1,6 @@
 #pragma once
 #include "my_string.h"
+#include "consts.h"
 struct Index {
 	int i;
 	int j;
@@ -16,13 +17,19 @@ struct Index {
 struct City {
 	size_t indexInCityVector=0;
 	Index index;
-	myString name = "";
+	const char* name;
 
 	City() {
 
 	}
 
-	City(int i, int j, myString& newName, size_t newIndexInCityVector) : index(Index(i,j)), name(newName), indexInCityVector(newIndexInCityVector) {
+	City(int i, int j, const char*& newName, size_t newIndexInCityVector) : index(Index(i,j)), name(newName), indexInCityVector(newIndexInCityVector) {
+		//size_t length = strlen(newName) + 1;
+		//size_t size = STRING_BUFFER;
+
+		//char* destination = new char[length];
+		//strcpy_s(destination, length, newName);
+		//this->name = destination;
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const City& obj) {
