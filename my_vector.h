@@ -108,6 +108,14 @@ public:
 		return this->arr[index];
 	}
 
+	T& front() {
+		return this->arr[0];
+	}
+
+	T& back() {
+		return this->arr[this->size-1];
+	}
+
 	size_t getSize() const {
 		return this->size;
 	}

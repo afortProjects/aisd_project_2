@@ -2,9 +2,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "my_hash_node.h"
+#include "my_double_linked_list.h"
 #include <iostream>
 #include <cstring>
-#define TABLE_SIZE 10000
+#define TABLE_SIZE 1000
 
 template <typename Key, typename Value>
 class myHashMap {
@@ -61,9 +62,12 @@ public:
 			delete[] this->table;
 	}
 
-	size_t hash_string(const char* str) {
-		size_t precision = 2;
-		return((*(size_t*)str) >> precision) % TABLE_SIZE;
+	unsigned int hash_string(const char* str) {
+		unsigned int hash = 5381;
+		while (*str) {
+			hash = ((hash << 5) + hash) + (*str++);
+		}
+		return hash % TABLE_SIZE;
 	}
 
 	void add(const Key& newKey, const Value& newValue) {
@@ -120,7 +124,7 @@ public:
 	//	return this->table[index];
 	//}
 
-	City operator[](const char* _key) {
+	DoubleLinkedList<City>* operator[](const char* _key) {
 		size_t hashValue = hash_string(_key);
 		myHashNode<Key, Value>* entry = table[hashValue];
 
@@ -131,7 +135,7 @@ public:
 			}
 			entry = entry->getNext();
 		}
-		return City();
+		return nullptr;
 	}
 
 

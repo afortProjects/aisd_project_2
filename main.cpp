@@ -1,26 +1,23 @@
 #include <iostream>
-//#include "my_string.h"
-//#include "my_vector.h"
-//#include "my_queue.h"
-//#include "double_linked_list.h"
-//#include "my_hash_map.h"
-//
-//#include "structs.h"
-//#include "input_parser.h"
-//#include "graph_parser.h"
-//#include "result_parser.h"
-
+#include "structs.h"
 #include "parser.h";
+
 using namespace std;
 int main() {
 	Parser parser;
-	parser.getData();
-	parser.convertToGraph();
-	for (size_t i = 0; i < parser.graphList.getSize(); i++) {
-		cout << parser.graphList[i].getLastNode()->name;
-		cout << parser.graphList[i].getLastNode()->cost;
+	parser.createHashMap();
+	for (size_t i = 0; i < 1000; i++) {
+		if (parser.citiesHashMap.table[i] != NULL) {
+			cout << parser.citiesHashMap.table[i]->getKey() << "";
+			cout << parser.citiesHashMap.table[i]->getValue();
 
+		}
 	}
+	//for (size_t i = 0; i < parser.graphList.getSize(); i++) {
+	//	cout << parser.graphList[i].getLastNode()->name;
+	//	cout << parser.graphList[i].getLastNode()->cost;
+
+	//}
 	//if (parser.amountOfFlights != 0)
 	//	parser.includeFlights();
 	//parser.djikstra();

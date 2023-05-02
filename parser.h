@@ -4,7 +4,7 @@
 #include "structs.h"
 #include "my_string.h"
 #include "my_queue.h"
-#include "double_linked_list.h"
+#include "my_double_linked_list.h"
 #include <iostream>
 
 class Parser {
@@ -20,11 +20,13 @@ public:
 	myVector<myVector<myString>> shortestPathsCities;
 	myVector<myVector<int>> graph;
 	myVector<myVector<bool>> visitedArray;
-	myHashMap<const char*, City> citiesHashMap;
+	myHashMap<const char*, DoubleLinkedList<City>*> citiesHashMap;
 	bool needToDoBfs = false;
 	myVector<DoubleLinkedList<City>> graphList;
 public:
 	Parser();
+
+	void createHashMap();
 
 	void getData();
 
@@ -32,9 +34,9 @@ public:
 
 	void getFlights();
 
-	void getQueries();
+	void getQueries(); 
 
-	void getCityName(int i, int j);
+	const char* getCityName(int i, int j);
 
 	void getCities();
 
@@ -43,7 +45,7 @@ public:
 	City findCity(int i, int j);
 
 	//myVector<int> bfs(City& source);
-	DoubleLinkedList<City>& bfs(City& source);
+	DoubleLinkedList<City>* bfs(int sourceI, int sourceJ);
 
 
 	void convertToGraph();

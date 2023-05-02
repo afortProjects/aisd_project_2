@@ -1,71 +1,17 @@
 #pragma once
 #include "my_string.h"
 #include "consts.h"
-struct Index {
-	int i;
-	int j;
 
-	Index() {
-		i = 0;
-		j = 0;
-	}
-
-	Index(int& newI, int& newJ) : i(newI), j(newJ) {
-	}
-};
-
-struct City {
-	size_t indexInCityVector=0;
-	Index index;
-	const char* name;
-	City* next = nullptr;
-	City* prev = nullptr;
-	int cost = 0;
-
-	City() {
-
-	}
-
-	City(int i, int j, const char*& newName, size_t newIndexInCityVector) : index(Index(i,j)), name(newName), indexInCityVector(newIndexInCityVector) {
-		//size_t length = strlen(newName) + 1;
-		//size_t size = STRING_BUFFER;
-
-		//char* destination = new char[length];
-		//strcpy_s(destination, length, newName);
-		//this->name = destination;
-	}
-
-	friend std::ostream& operator<<(std::ostream& os, const City& obj) {
-		os << obj.name << " " << obj.index.i<< " " << obj.index.j << " " << obj.indexInCityVector << " ";
-		return os;
-	}
-};
-
-struct CityNode {
-	CityNode* prev;
-	CityNode* next;
-	City city;
-	int cost;
-
-	CityNode() {
-		prev = nullptr;
-		next = nullptr;
-		cost = 0;
-	}
-
-	CityNode(City city, CityNode* next, int cost) : city(city), next(next), cost(cost) {}
-};
-
-template<typename T> struct Pair {
+template<typename T, typename K> struct Pair {
 	T firstValue;
-	T secondValue;
+	K secondValue;
 
 	Pair() {
 		this->firstValue = 0;
 		this->secondValue = 0;
 	}
 
-	Pair(T _firstValue, T _secondValue) {
+	Pair(T _firstValue, K _secondValue) {
 		this->firstValue = _firstValue;
 		this->secondValue = _secondValue;
 	}
@@ -81,6 +27,28 @@ template<typename T> struct Pair {
 
 	friend std::ostream& operator<<(std::ostream& os, const Pair& obj) {
 		os << obj.firstValue << " " << obj.secondValue;
+		return os;
+	}
+};
+
+struct City {
+	Pair<int, int> index;
+	int cost = 0;
+
+	City() {
+
+	}
+
+	City(int i, int j) : index(Pair<int, int>(i, j)) {
+	}
+
+
+	City(int i, int j, int cost) : index(Pair<int, int>(i, j)), cost(cost) {
+	}
+
+
+	friend std::ostream& operator<<(std::ostream& os, const City& obj) {
+		os << obj.index << " " << obj.cost;
 		return os;
 	}
 };
@@ -130,16 +98,30 @@ struct Query {
 	}
 };
 
-
-struct Node {
-	int x, y, distance;
-
-	Node() {
-		this->x = 0;
-		this->y = 0;
-		this->distance = 0;
-	}
-
-	Node(int _x, int _y, int _distance) : x(_x), y(_y), distance(_distance) {
-	}
-};
+//struct CityNode {
+//	CityNode* prev;
+//	CityNode* next;
+//	City city;
+//	int cost;
+//
+//	CityNode() {
+//		prev = nullptr;
+//		next = nullptr;
+//		cost = 0;
+//	}
+//
+//	CityNode(City city, CityNode* next, int cost) : city(city), next(next), cost(cost) {}
+//};
+//
+//struct Node {
+//	int x, y, distance;
+//
+//	Node() {
+//		this->x = 0;
+//		this->y = 0;
+//		this->distance = 0;
+//	}
+//
+//	Node(int _x, int _y, int _distance) : x(_x), y(_y), distance(_distance) {
+//	}
+//};
