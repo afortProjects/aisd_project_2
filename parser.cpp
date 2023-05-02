@@ -9,7 +9,7 @@ Parser::Parser() {
 	this->amountOfFlights = 0;
 	this->h = 0;
 	this->w = 0;
-	fillVisitedArrayWithZeros();
+	this->wasVisitedArrayChanged = false;
 }
 
 void Parser::getBoard() {
@@ -22,6 +22,7 @@ void Parser::getBoard() {
 		for (size_t j = 0; j < w; j++) {
 			inputCharacter = getchar();
 			tempVector.push_back(inputCharacter);
+			if (inputCharacter == '#') needToDoBfs = true;
 		}
 		inputCharacter = getchar();
 		board.push_back(tempVector);
@@ -203,11 +204,11 @@ void Parser::getData() {
 }
 
 void Parser::fillVisitedArrayWithZeros() {
-	myVector<myVector<int>> newVisitedArray;
+	myVector<myVector<bool>> newVisitedArray;
 	for (size_t i = 0; i < this->h; i++) {
-		myVector<int> tempVector;
+		myVector<bool> tempVector;
 		for (size_t j = 0; j < this->w; j++) {
-			tempVector.push_back(0);
+			tempVector.push_back(false);
 		}
 		newVisitedArray.push_back(tempVector);
 	}
@@ -222,24 +223,36 @@ City Parser::findCity(int i, int j) {
 	return City();
 }
 
-myVector<int> Parser::bfs(City& source) {
+DoubleLinkedList<City>& Parser::bfs(City& source) {
 	int directions[4][2] = { {0, 1}, {0, -1}, {1, 0}, {-1, 0} };
 	myQueue<Node> queue;
-	myVector<int> distances;
+	/*myVector<int> distances;
+	myVector<City> cities;*/
 	int queueFirstElementIndexI;
 	int queueFirstElementIndexJ;
-	//fillVisitedArrayWithZeros();
-	for (size_t i = 0; i < this->visitedArray.getSize(); i++) {
-		for (size_t j = 0; j < this->visitedArray[i].getSize(); j++) {
-			this->visitedArray[i][j] = 0;
+
+	DoubleLinkedList<City> adjencies;
+	adjencies.addNewBlockToList(&source);
+
+	//distances.reserveNewCapacity(this->amountOfCities);
+	//cities.reserveNewCapacity(this->amountOfCities);
+
+	//for (size_t i = 0; i < this->amountOfCities; i++) {
+	//	distances[i] = 0;
+	//	//cities[i] = City();
+	//}
+
+	if (this->wasVisitedArrayChanged) {
+		for (size_t i = 0; i < this->visitedArray.getSize(); i++) {
+			for (size_t j = 0; j < visitedArray[i].getSize(); j++) {
+				this->visitedArray[i][j] = false;
+			}
 		}
 	}
-	for (size_t i = 0; i < this->amountOfCities; i++) {
-		distances.push_back(0);
-	}
+
 
 	queue.addElementToQueue(Node{ source.index.i, source.index.j, 0 });
-	this->visitedArray[source.index.i][source.index.j] = 1;
+	this->visitedArray[source.index.i][source.index.j] = true;
 
 	while (!queue.isEmpty()) {
 		Node currentElement = queue.getElementFromQueue();
@@ -250,26 +263,37 @@ myVector<int> Parser::bfs(City& source) {
 			newX = queueFirstElementIndexI + directions[i][0];
 			newY = queueFirstElementIndexJ + directions[i][1];
 
+
 			if (newX >= 0 && newY >= 0 && newX < this->h && newY < this->w && this->visitedArray[newX][newY] == 0) {
 				if ((this->board[newX][newY] == '#')) {
 					queue.addElementToQueue(Node{ newX, newY, currentElement.distance + 1 });
+					this->visitedArray[newX][newY] = true;
+					this->wasVisitedArrayChanged = true;
 				}
 				else if (this->board[newX][newY] == '*' && (newX != source.index.i || newY != source.index.j)) {
-					distances[findCity(newX, newY).indexInCityVector] = (currentElement.distance + 1);
-				}
-				else continue;
+					City foundCity = findCity(newX, newY);
+					foundCity.cost = currentElement.distance + 1;
+					adjencies.addNewBlockToList(&foundCity);
+					this->visitedArray[newX][newY] = true;
+					this->wasVisitedArrayChanged = true;
+					//cities[foundCity.indexInCityVector] = foundCity;
+					//distances[foundCity.indexInCityVector] = (currentElement.distance + 1);
 
-				this->visitedArray[newX][newY];
+				}
 			}
 		}
 	}
-	return distances;
+	this->visitedArray[source.index.i][source.index.j] = false;
+	//for(size_t i=0;i<cities)
+	return adjencies;
 }
 
 void Parser::convertToGraph() {
-	for (size_t i = 0; i < cities.getSize(); i++) {
-		this->graph.push_back(bfs(this->cities[i]));
-	}
+	fillVisitedArrayWithZeros();
+		for (size_t i = 0; i < cities.getSize(); i++) {
+			//this->graph.push_back(bfs(this->cities[i]));
+			this->graphList.push_back(bfs(this->cities[i]));
+		}
 }
 
 void Parser::includeFlights() {
@@ -282,7 +306,7 @@ void Parser::includeFlights() {
 	}
 }
 
-int Parser::minDistance(myVector<int>& distances, myVector<int>& visitedArr) {
+int Parser::minDistance(myVector<int>& distances, myVector<bool>& visitedArr) {
 	int min = INT_MAX;
 	int min_index = 0;
 

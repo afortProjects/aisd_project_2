@@ -11,6 +11,7 @@ class Parser {
 public:
 	int w, h, amountOfFlights, amountOfQueries;
 	size_t amountOfCities;
+	bool wasVisitedArrayChanged;
 	myVector<myVector<char>> board;
 	myVector<Flight> flights;
 	myVector<Query> queries;
@@ -18,8 +19,9 @@ public:
 	myVector<myVector<int>> shortestPaths;
 	myVector<myVector<myString>> shortestPathsCities;
 	myVector<myVector<int>> graph;
-	myVector<myVector<int>> visitedArray;
+	myVector<myVector<bool>> visitedArray;
 	myHashMap<const char*, City> citiesHashMap;
+	bool needToDoBfs = false;
 	myVector<DoubleLinkedList<City>> graphList;
 public:
 	Parser();
@@ -40,13 +42,15 @@ public:
 
 	City findCity(int i, int j);
 
-	myVector<int> bfs(City& source);
+	//myVector<int> bfs(City& source);
+	DoubleLinkedList<City>& bfs(City& source);
+
 
 	void convertToGraph();
 
 	void includeFlights();
 
-	int minDistance(myVector<int>& distances, myVector<int>& visitedArr);
+	int minDistance(myVector<int>& distances, myVector<bool>& visitedArr);
 
 	void djikstra();
 

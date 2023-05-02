@@ -81,5 +81,14 @@ public:
         return true;
     }
 
+    //friend std::ostream& operator<<(std::ostream& os, DoubleLinkedList<StructNode>& obj) {
+    //    StructNode* temp = obj.headNode;
+    //    while (temp != nullptr) {
+    //        std:: cout << obj.`;
+    //        temp = temp->next;
+    //    }
+    //    return os;
+    //}
+
     ~DoubleLinkedList() {}
 };

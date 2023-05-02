@@ -18,6 +18,9 @@ struct City {
 	size_t indexInCityVector=0;
 	Index index;
 	const char* name;
+	City* next = nullptr;
+	City* prev = nullptr;
+	int cost = 0;
 
 	City() {
 
@@ -43,6 +46,14 @@ struct CityNode {
 	CityNode* next;
 	City city;
 	int cost;
+
+	CityNode() {
+		prev = nullptr;
+		next = nullptr;
+		cost = 0;
+	}
+
+	CityNode(City city, CityNode* next, int cost) : city(city), next(next), cost(cost) {}
 };
 
 template<typename T> struct Pair {

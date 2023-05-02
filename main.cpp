@@ -16,12 +16,16 @@ int main() {
 	Parser parser;
 	parser.getData();
 	parser.convertToGraph();
-	if (parser.amountOfFlights != 0)
-		parser.includeFlights();
+	for (size_t i = 0; i < parser.graphList.getSize(); i++) {
+		cout << parser.graphList[i].getLastNode()->name;
+		cout << parser.graphList[i].getLastNode()->cost;
 
-	parser.djikstra();
+	}
+	//if (parser.amountOfFlights != 0)
+	//	parser.includeFlights();
+	//parser.djikstra();
 
-	parser.printOutput();
+	//parser.printOutput();
 
 	//for (size_t i = 0; i < 1000; i++) {
 	//	if (parser.citiesHashMap.table[i] != NULL) {
