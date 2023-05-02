@@ -25,6 +25,11 @@ template<typename T, typename K> struct Pair {
 		}
 	}
 
+	void operator=(const Pair& obj) {
+		this->firstValue = obj.firstValue;
+		this->secondValue = obj.secondValue;
+	}
+
 	friend std::ostream& operator<<(std::ostream& os, const Pair& obj) {
 		os << obj.firstValue << " " << obj.secondValue;
 		return os;
@@ -34,16 +39,15 @@ template<typename T, typename K> struct Pair {
 struct City {
 	Pair<int, int> index;
 	int cost = 0;
-
+	int num = 0;
 	City() {
 
 	}
 
-	City(int i, int j) : index(Pair<int, int>(i, j)) {
+	City(int i, int j) : index(Pair<int, int>{i, j}) {
 	}
 
-
-	City(int i, int j, int cost) : index(Pair<int, int>(i, j)), cost(cost) {
+	City(int i, int j, int cost) : index(Pair<int, int>{i, j}), cost(cost) {
 	}
 
 

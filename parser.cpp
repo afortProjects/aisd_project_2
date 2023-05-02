@@ -3,7 +3,7 @@
 #include <string>
 #include "consts.h"
 #include <cstdlib>
-#define TABLE_SIZE 1000
+#include <queue>
 Parser::Parser() {
 	this->amountOfCities = 0;
 	this->amountOfQueries = 0;
@@ -44,7 +44,7 @@ void Parser::getFlights() {
 		//myVector<char>tempDestination;
 		int cost = 0;
 
-		char character = getchar();
+		char character = _getchar_nolock();
 		while (character != ' ') {
 			source[counter] = character;
 			character = getchar();
@@ -52,34 +52,33 @@ void Parser::getFlights() {
 		}
 		source[counter] = '\0';
 		counter = 0;
-		character = getchar();
+		character = _getchar_nolock();
 		while (character != ' ') {
 			destination[counter] = character;
-			character = getchar();
+			character = _getchar_nolock();
 			counter++;
 		}
 		destination[counter] = '\0';
 
 		scanf("%d", &cost); 
-		getchar();
+		_getchar_nolock();
 
-		DoubleLinkedList<City>* currentList = this->citiesHashMap[source];
+		DoubleLinkedList<City>* currentList = citiesHashMap[source].secondValue;
 		Node<City>* headNode = currentList->getHead();
 		bool isNeighbour = false;
 
 		while (headNode != nullptr) {
-			if (headNode->value.index.firstValue == this->citiesHashMap[destination]->getHead()->value.index.firstValue && headNode->value.index.secondValue == this->citiesHashMap[destination]->getHead()->value.index.secondValue) {
+			if (headNode->value.index.firstValue == citiesHashMap[destination].secondValue->getHead()->value.index.firstValue && headNode->value.index.secondValue == citiesHashMap[destination].secondValue->getHead()->value.index.secondValue) {
 				//Element is a neighbour
 				if (headNode->value.cost > cost) {
 					headNode->value.cost = cost;
 					isNeighbour = true;
-					break;
 				}
 			}
 			headNode = headNode->next;
 		}
 		if (!isNeighbour) {
-			currentList->addLast(City{ this->citiesHashMap[destination]->getHead()->value.index.firstValue, this->citiesHashMap[destination]->getHead()->value.index.secondValue, cost });
+			currentList->addLast(City{ citiesHashMap[destination].secondValue->getHead()->value.index.firstValue, citiesHashMap[destination].secondValue->getHead()->value.index.secondValue, cost });
 		}
 		delete[] source;
 		delete[] destination;
@@ -114,7 +113,12 @@ void Parser::getQueries() {
 			character = getchar();
 		}
 		choice = atoi(temp.str());
-		this->queries.push_back(Query(tempSource, tempDestination, choice));
+
+		Pair<int, myString> temp = djikstra(citiesHashMap[tempSource.str()], citiesHashMap[tempDestination.str()]);
+		std::cout << temp.firstValue;
+		if (choice == 1)
+			std::cout << " " << temp.secondValue;
+		std::cout << '\n';
 	}
 }
 
@@ -215,16 +219,20 @@ const char* Parser::getCityName(int i, int j) {
 void Parser::createHashMap() {
 	getBoard();
 	fillVisitedArrayWithZeros();
-	for (size_t i = 0; i < h; i++) {
-		for (size_t j = 0; j < w; j++) {
+	for (int i = 0; i < h; i++) {
+		for (int j = 0; j < w; j++) {
 			if (this->board[i][j] == '*') {
-				//const char* cityName = ;
 				DoubleLinkedList<City>* adjencies = bfs(i, j);
- 				this->citiesHashMap.add(getCityName(i, j), adjencies);
+				const char* cityName = getCityName(i, j);
+				this->citiesIndexHashMap.add(Pair<int, int>{ i, j }, cityName);
+				this->citiesHashMap.add(cityName, Pair<int, DoubleLinkedList<City>*> {this->amountOfCities, adjencies});
+				this->citiesVector.push_back(adjencies);
+				this->amountOfCities++;
 			}
 		}
 	}
 	getFlights();
+	getQueries();
 }
 
 void Parser::fillVisitedArrayWithZeros() {
@@ -247,7 +255,9 @@ DoubleLinkedList<City>* Parser::bfs(int sourceI, int sourceJ) {
 	int queueFirstElementIndexJ;
 
 	DoubleLinkedList<City>* adjencies = new DoubleLinkedList<City>;
-	adjencies->addFirst(City{ sourceI, sourceJ });
+	adjencies->addLast(City{ sourceI, sourceJ, 0 });
+
+	if ((sourceJ == 0 || this->board[sourceI][sourceJ - 1] == '.') && (sourceJ == this->w - 1 || this->board[sourceI][sourceJ + 1] == '.') && (sourceI == 0 || this->board[sourceI - 1][sourceJ] == '.') && (sourceI == this->h - 1 || this->board[sourceI + 1][sourceJ] == '.')) return adjencies;
 
 	if (this->wasVisitedArrayChanged) {
 		for (size_t i = 0; i < this->visitedArray.getSize(); i++) {
@@ -264,7 +274,7 @@ DoubleLinkedList<City>* Parser::bfs(int sourceI, int sourceJ) {
 		City currentElement = queue.getElementFromQueue();
 		queueFirstElementIndexI = currentElement.index.firstValue;
 		queueFirstElementIndexJ = currentElement.index.secondValue;
-		int newX, newY;
+		int newX, newY;	
 
 		for (size_t i = 0; i < 4; i++) {
 			newX = queueFirstElementIndexI + directions[i][0];
@@ -274,82 +284,79 @@ DoubleLinkedList<City>* Parser::bfs(int sourceI, int sourceJ) {
 			if (newX >= 0 && newY >= 0 && newX < this->h && newY < this->w && this->visitedArray[newX][newY] == false) {
 				if ((this->board[newX][newY] == '#')) {
 					queue.addElementToQueue(City{ newX, newY, currentElement.cost + 1 });
-					this->visitedArray[newX][newY] = true;
-					this->wasVisitedArrayChanged = true;
 				}
 				else if (this->board[newX][newY] == '*' && (newX != sourceI || newY != sourceJ)) {
 					//TODO: MAKE SURE IT WORKS
 					adjencies->addLast(City{ newX, newY, currentElement.cost + 1 });
-					this->visitedArray[newX][newY] = true;
-					this->wasVisitedArrayChanged = true;
 				}
+
+				this->wasVisitedArrayChanged = true;
+				this->visitedArray[newX][newY] = true;
+
 			}
+
 		}
 	}
 	this->visitedArray[sourceI][sourceJ] = false;
 	return adjencies;
 }
 
-//void Parser::includeFlights() {
-//	for (size_t i = 0; i < this->flights.getSize(); i++) {
-//		int first = this->citiesHashMap[this->flights[i].source].indexInCityVector;
-//		int second = this->citiesHashMap[this->flights[i].destination].indexInCityVector;
-//		if ((this->graph[first][second] > this->flights[i].cost || graph[first][second] == 0)) {
-//			graph[first][second] = this->flights[i].cost;
-//		}
-//	}
-//}
-//
-//int Parser::minDistance(myVector<int>& distances, myVector<bool>& visitedArr) {
-//	int min = INT_MAX;
-//	int min_index = 0;
-//
-//	for (int v = 0; v < this->cities.getSize(); v++) {
-//		if (visitedArr[v] == 0 && distances[v] <= min) {
-//			min = distances[v];
-//			min_index = v;
-//		}
-//	}
-//	return min_index;
-//}
-//void Parser::djikstra() {
-//	int citiesSize = this->cities.getSize();
-//	int minDist;
-//	myString temp;
-//	fillVisitedArrayWithZeros();
-//	for (size_t i = 0; i < citiesSize; i++) {
-//		myVector<int> distances;
-//		myVector<myString> shortestPath;
-//		myString temp = "";
-//		for (size_t j = 0; j < citiesSize; j++) {
-//			distances.push_back(INT_MAX);
-//			shortestPath.push_back("");
-//		}
-//
-//		distances[i] = 0;
-//
-//		for (size_t counter = 0; counter < citiesSize - 1; counter++) {
-//			minDist = minDistance(distances, this->visitedArray[i]);
-//			this->visitedArray[i][minDist] = 1;
-//			for (size_t secondCounter = 0; secondCounter < citiesSize; secondCounter++) {
-//				if (!this->visitedArray[i][secondCounter] && this->graph[minDist][secondCounter] != 0 && distances[minDist] != INT_MAX && distances[minDist] + this->graph[minDist][secondCounter] < distances[secondCounter]) {
-//					distances[secondCounter] = distances[minDist] + this->graph[minDist][secondCounter];
-//					if (this->cities[minDist].name != this->cities[i].name) {
-//						temp = shortestPath[minDist];
-//						if (strlen(this->cities[minDist].name) != 0) {
-//							temp += this->cities[minDist].name;
-//							temp += " ";
-//						}
-//					}
-//					shortestPath[secondCounter] = temp;
-//				}
-//			}
-//		}
-//		this->shortestPaths.push_back(distances);
-//		this->shortestPathsCities.push_back(shortestPath);
-//	}
-//}
-//
+Pair<int, myString> Parser::djikstra(Pair<int, DoubleLinkedList<City>*> source, Pair<int, DoubleLinkedList<City>*> dest) {
+	myVector<myString> shortestPath;
+	myVector<int> distances;
+	distances.reserveNewCapacity(this->amountOfCities);
+	shortestPath.reserveNewCapacity(this->amountOfCities);
+
+	for (size_t i = 0; i < this->amountOfCities; i++) {
+		distances.push_back(INT_MAX);
+		shortestPath.push_back("");
+	}
+	distances[source.firstValue] = 0;
+
+	myPriorityQueue queue;
+	queue.push(Pair<int, int>{0, source.firstValue});
+
+	while (!queue.empty()) {
+		//Second value is index in vector of cities
+		Pair<int, int> temp = queue.top();
+		int u = temp.secondValue;
+		queue.pop();
+
+		if (u == dest.firstValue) {
+			return Pair<int, myString> {distances[u], shortestPath[u]};
+		}
+
+		DoubleLinkedList<City>* currentList = this->citiesVector[u];
+		//std::cout << citiesVector[u] << std::endl;
+		Node<City>* headNode = currentList->getHead();
+		headNode = headNode->next;
+		while (headNode != NULL) {
+			//Search neighbours
+			const char* cityName = this->citiesIndexHashMap[Pair<int, int> {headNode->value.index.firstValue, headNode->value.index.secondValue}];
+			//if (cityName == NULL) {
+			//	headNode = headNode->next;
+			//	continue;
+			//}
+			int v = this->citiesHashMap[cityName].firstValue;
+			int weight = headNode->value.cost;
+			if (distances[u] != INT_MAX && distances[v] > distances[u] + weight) {
+				distances[v] = distances[u] + weight;
+				myString temp = shortestPath[u];
+				if (strcmp(cityName, this->citiesIndexHashMap[Pair<int, int> {dest.secondValue->getHead()->value.index.firstValue, dest.secondValue->getHead()->value.index.secondValue}]) != 0 ) {
+					temp += cityName;
+					temp += ' ';
+				}
+				shortestPath[v] = temp;
+				queue.push(Pair<int, int>{distances[v], v});
+			}
+			headNode = headNode->next;
+
+		}
+
+	}
+	return Pair<int, myString> {-1, ""};
+}
+
 //void Parser::printOutput() {
 //	for (size_t i = 0; i < queries.getSize(); i++) {
 //		const char* src = queries[i].source.str();

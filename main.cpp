@@ -6,13 +6,17 @@ using namespace std;
 int main() {
 	Parser parser;
 	parser.createHashMap();
-	for (size_t i = 0; i < 1000; i++) {
-		if (parser.citiesHashMap.table[i] != NULL) {
-			cout << parser.citiesHashMap.table[i]->getKey() << "";
-			cout << parser.citiesHashMap.table[i]->getValue();
-
-		}
-	}
+	//for (size_t i = 0; i < 10000; i++) {
+	//	if (parser.citiesHashMap.table[i] != NULL) {
+	//		if (strcmp(parser.citiesHashMap.table[i]->getKey(), "AAA") == 0) {
+	//			cout << parser.citiesHashMap.table[i]->getKey() << " ";
+	//			cout << parser.citiesHashMap.table[i]->getValue();
+	//	}
+	//	}
+	//}
+	//cout << endl;
+	//const char* a = "B";
+	//cout << parser.citiesIndexHashMap[Pair<int, int> {parser.citiesHashMap[a].secondValue->getHead()->value.index.firstValue, parser.citiesHashMap[a].secondValue->getHead()->value.index.secondValue}];
 	//for (size_t i = 0; i < parser.graphList.getSize(); i++) {
 	//	cout << parser.graphList[i].getLastNode()->name;
 	//	cout << parser.graphList[i].getLastNode()->cost;

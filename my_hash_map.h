@@ -1,11 +1,11 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
-
+#include "consts.h"
 #include "my_hash_node.h"
 #include "my_double_linked_list.h"
 #include <iostream>
 #include <cstring>
-#define TABLE_SIZE 1000
+
 
 template <typename Key, typename Value>
 class myHashMap {
@@ -15,39 +15,7 @@ public:
 	myHashMap() {
 		this->table = new myHashNode<Key, Value>*[TABLE_SIZE]();
 	}
-	//myHashMap(const myHashMap& other) {
-	//	this->table = new myHashNode<Key, Value>*[TABLE_SIZE]();
-	//	for (size_t i = 0; i < TABLE_SIZE; ++i) {
-	//			myHashNode<Key, Value>* current = other.table[i];
-	//			while (current != NULL) {
-	//				this->add(current->getKey(), current->getValue());
-	//				current = current->getNext();
-	//			}
-	//	}
-	//}
-	//myHashMap<Key, Value>& operator=(const myHashMap<Key, Value>& other) {
-	//	if (this == &other) {
-	//		return *this; // self-assignment check
-	//	}
 
-	//	// clear the existing data
-	//	// copy the new data from other
-	//	table = new myHashNode<Key, Value>*[TABLE_SIZE](); // allocate memory for the new table
-
-	//	for (size_t i = 0; i < TABLE_SIZE; ++i) {
-	//		myHashNode<Key, Value>* entry = other.table[i];
-	//		if (entry != nullptr) {
-	//			table[i] = new myHashNode<Key, Value>(entry->getKey(), entry->getValue());
-	//			myHashNode<Key, Value>* curr = entry->getNext();
-	//			while (curr != nullptr) {
-	//				table[i]->setNext(new myHashNode<Key, Value>(curr->getKey(), curr->getValue()));
-	//				curr = curr->getNext();
-	//			}
-	//		}
-	//	}
-
-	//	return *this;
-	//}
 	~myHashMap() {
 		for (int i = 0; i < TABLE_SIZE; ++i) {
 			myHashNode<Key, Value>* currentEntry = table[i];
@@ -63,17 +31,57 @@ public:
 	}
 
 	unsigned int hash_string(const char* str) {
+		char* dest = new char[strlen(str) + 1];
+		strcpy(dest, str);
+		dest[strlen(str)] = '\0';
+
 		unsigned int hash = 5381;
-		while (*str) {
-			hash = ((hash << 5) + hash) + (*str++);
+		while (*dest) {
+			hash = ((hash << 5) + hash) + (*dest++);
 		}
 		return hash % TABLE_SIZE;
 	}
 
-	void add(const Key& newKey, const Value& newValue) {
+	unsigned int hash_int(const int number) {
+		unsigned int hash = 2166136261u; // FNV offset basis
+
+		// XOR-fold the hash for each byte of the integer
+		for (unsigned int i = 0; i < sizeof(int); ++i) {
+			hash ^= (unsigned int)(number >> (i * 8)) & 0xFFu;
+			hash *= 16777619u; // FNV prime
+		}
+
+		return hash % TABLE_SIZE;
+	}
+
+	void add(const Pair<int, int> newKey, const char*& newValue) {
+		size_t hashValue = hash_int(newKey.firstValue) % TABLE_SIZE;
+		myHashNode< Pair<int, int>, const char*>* prev = NULL;
+		myHashNode<Pair<int, int>, const char*>* entry = table[hashValue];
+
+		while (entry != NULL && (entry->getKey().firstValue != newKey.firstValue || entry->getKey().secondValue != newKey.secondValue)) {
+			prev = entry;
+			entry = entry->getNext();
+		}
+
+		if (entry == NULL) {
+			entry = new myHashNode<Pair<int, int>, const char*>(newKey, newValue);
+			if (prev == NULL) {
+				table[hashValue] = entry;
+			}
+			else {
+				prev->setNext(entry);
+			}
+		}
+		else {
+			entry->setValue(newValue);
+		}
+	}
+
+	void add(const char*& newKey, const Pair<int, DoubleLinkedList<City>*>& newValue) {
 		size_t hashValue = hash_string(newKey);
-		myHashNode<Key, Value>* prev = NULL;
-		myHashNode<Key, Value>* entry = table[hashValue];
+		myHashNode<const char*, Pair<int, DoubleLinkedList<City>*>>* prev = NULL;
+		myHashNode<const char*, Pair<int, DoubleLinkedList<City>*>>* entry = table[hashValue];
 
 		while (entry != NULL && entry->getKey() != newKey) {
 			prev = entry;
@@ -81,7 +89,7 @@ public:
 		}
 
 		if (entry == NULL) {
-			entry = new myHashNode<Key, Value>(newKey, newValue);
+			entry = new myHashNode<const char*, Pair<int, DoubleLinkedList<City>*>>(newKey, newValue);
 			if (prev == NULL) {
 				table[hashValue] = entry;
 			}
@@ -119,12 +127,7 @@ public:
 		}
 	}
 
-
- //   myHashNode<Key, Value>& operator[](int index) {
-	//	return this->table[index];
-	//}
-
-	DoubleLinkedList<City>* operator[](const char* _key) {
+	Pair<int, DoubleLinkedList<City>*> operator[](const char* _key) {
 		size_t hashValue = hash_string(_key);
 		myHashNode<Key, Value>* entry = table[hashValue];
 
@@ -135,9 +138,23 @@ public:
 			}
 			entry = entry->getNext();
 		}
-		return nullptr;
+		return Pair<int, DoubleLinkedList<City>*>();
 	}
 
+	const char* operator[](Pair<int, int> _key) {
+		size_t hashValue = hash_int(_key.firstValue) % TABLE_SIZE;
+
+		myHashNode<Key, Value>* entry = table[hashValue];
+
+		while (entry != NULL) {
+			Pair<int, int> currentKey = entry->getKey();
+			if (currentKey.firstValue == _key.firstValue && currentKey.secondValue == _key.secondValue) {
+				return entry->getValue();
+			}
+			entry = entry->getNext();
+		}
+		return nullptr;
+	}
 
 	friend std::ostream& operator<<(std::ostream& os, const myHashMap& obj) {
 		for (size_t i = 0; i < TABLE_SIZE; i++) {

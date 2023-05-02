@@ -5,22 +5,19 @@
 #include "my_string.h"
 #include "my_queue.h"
 #include "my_double_linked_list.h"
+#include "my_priority_queue.h"
 #include <iostream>
 
 class Parser {
 public:
 	int w, h, amountOfFlights, amountOfQueries;
-	size_t amountOfCities;
+	int amountOfCities;
 	bool wasVisitedArrayChanged;
 	myVector<myVector<char>> board;
-	myVector<Flight> flights;
-	myVector<Query> queries;
-	myVector<City> cities;
-	myVector<myVector<int>> shortestPaths;
-	myVector<myVector<myString>> shortestPathsCities;
-	myVector<myVector<int>> graph;
 	myVector<myVector<bool>> visitedArray;
-	myHashMap<const char*, DoubleLinkedList<City>*> citiesHashMap;
+	myHashMap<const char*, Pair<int, DoubleLinkedList<City>*>> citiesHashMap;
+	myVector<DoubleLinkedList<City>*> citiesVector;
+	myHashMap<Pair<int, int>, const char* > citiesIndexHashMap;
 	bool needToDoBfs = false;
 	myVector<DoubleLinkedList<City>> graphList;
 public:
@@ -54,7 +51,9 @@ public:
 
 	int minDistance(myVector<int>& distances, myVector<bool>& visitedArr);
 
-	void djikstra();
+	//void djikstra();
+	Pair<int, myString> djikstra(Pair<int, DoubleLinkedList<City>*> source, Pair<int, DoubleLinkedList<City>*> dest);
+
 
 	void printOutput();
 

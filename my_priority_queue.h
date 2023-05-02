@@ -11,7 +11,7 @@
 
 class myPriorityQueue {
 private:
-    myVector<City> heap;
+    myVector<Pair<int, int>> heap;
 
     int parent(int i) { return (i - 1) / 2; }
     int left(int i) { return 2 * i + 1; }
@@ -23,8 +23,8 @@ public:
     myPriorityQueue() {}
 
     bool empty() { return heap.getSize() == 0; }
-    void push(City n);
+    void push(Pair<int, int> n);
     void pop();
-    City top() { return heap.front(); }
+    Pair<int, int>& top() { return heap.front(); }
 };
 
