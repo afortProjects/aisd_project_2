@@ -14,11 +14,11 @@ public:
 	myHashNode(const Key& _key, const Value& _value) : key(_key), value(_value), next(NULL) {};
 
 	//Getters
-	Key& getKey() {
+	Key getKey() {
 		return this->key;
 	}
 
-	Value& getValue() {
+	Value getValue() {
 		return this->value;
 	}
 

@@ -31,15 +31,16 @@ public:
 
 	unsigned int hash_string(const char* str) {
 		char* dest = new char[strlen(str) + 1];
+		char* temp = dest;
 		strcpy(dest, str);
 		dest[strlen(str)] = '\0';
 
 		unsigned int hash = HASH_STRING_VALUE;
 
-		while (*dest) {
-			hash = ((hash << HASH_STRING_PRECISION) + hash) + (*dest++);
+		while (*temp) {
+			hash = ((hash << HASH_STRING_PRECISION) + hash) + (*temp++);
 		}
-		//delete dest;
+		delete[] dest;
 		return hash % TABLE_SIZE;
 	}
 
@@ -125,7 +126,7 @@ public:
 		}
 	}
 
-	Pair<int, DoubleLinkedList<City>*>& operator[](const char* _key) {
+	Pair<int, DoubleLinkedList<City>*> operator[](const char* _key) {
 		size_t hashValue = hash_string(_key);
 		myHashNode<Key, Value>* entry = table[hashValue];
 
@@ -136,8 +137,7 @@ public:
 			}
 			entry = entry->getNext();
 		}
-		Pair<int, DoubleLinkedList<City>*> p{};
-		return p;
+		 return Pair<int, DoubleLinkedList<City>*>{};
 	}
 
 	const char* operator[](Pair<int, int>& _key) {

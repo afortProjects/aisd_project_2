@@ -35,13 +35,9 @@ public:
 
 	void fillVisitedArrayWithZeros();
 
-	City findCity(int i, int j);
-
 	DoubleLinkedList<City>* bfs(int sourceI, int sourceJ);
 
 	Pair<int, Pair<int, myVector<int>>>  djikstra(Pair<int, DoubleLinkedList<City>*> source, Pair<int, DoubleLinkedList<City>*> dest);
-
-	void printOutput();
 
 	void run();
 

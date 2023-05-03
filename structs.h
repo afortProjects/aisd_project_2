@@ -7,8 +7,6 @@ template<typename T, typename K> struct Pair {
 	K secondValue;
 
 	Pair() {
-		//this->firstValue = 0;
-		//this->secondValue = 0;
 	}
 
 	Pair(T _firstValue, K _secondValue) {
