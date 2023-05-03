@@ -14,6 +14,7 @@ public:
 	int w, h, amountOfFlights, amountOfQueries;
 	int amountOfCities;
 	bool wasVisitedArrayChanged;
+	bool areThereRoads;
 
 	myVector<myVector<char>> board;
 	myVector<myVector<bool>> visitedArray;

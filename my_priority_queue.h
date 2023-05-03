@@ -3,7 +3,7 @@
 #include "structs.h"
 
 class myPriorityQueue {
-private:
+public:
     myVector<Pair<int, int>> heap;
 
     int left(int i) { return 2 * i + 1; }

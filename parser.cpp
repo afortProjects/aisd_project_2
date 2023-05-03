@@ -7,6 +7,7 @@ Parser::Parser() {
 	this->h = 0;
 	this->w = 0;
 	this->wasVisitedArrayChanged = false;
+	this->areThereRoads = false;
 }
 
 void Parser::getBoard() {
@@ -19,6 +20,9 @@ void Parser::getBoard() {
 		for (size_t j = 0; j < w; j++) {
 			inputCharacter = getchar();
 			tempVector.push_back(inputCharacter);
+			if (inputCharacter == '#') {
+				areThereRoads = true;
+			}
 		}
 		inputCharacter = getchar();
 		board.push_back(tempVector);
@@ -33,8 +37,8 @@ void Parser::getFlights() {
 	for (int i = 0; i < amountOfFlights; i++) {
 		char* source = new char[BUFFER_SIZE];
 		char* destination = new char[BUFFER_SIZE];
+		char* cost = new char[BUFFER_SIZE];
 		int counter = 0;
-		int cost = 0;
 
 		char character = _getchar_nolock();
 		while (character != ' ') {
@@ -53,27 +57,18 @@ void Parser::getFlights() {
 		}
 
 		destination[counter] = '\0';
-
-		scanf("%d", &cost); 
-		_getchar_nolock();
+		counter = 0;
+		character = _getchar_nolock();
+		while (character != '\n') {
+			cost[counter] = character;
+			character = _getchar_nolock();
+			counter++;
+		}
+		cost[counter] = '\0';
 
 		DoubleLinkedList<City>* currentList = citiesHashMap[source].secondValue;
-		Node<City>* headNode = currentList->getHead();
-		bool isNeighbour = false;
+		currentList->addLast(City{ citiesHashMap[destination].secondValue->getHead()->value.index.firstValue, citiesHashMap[destination].secondValue->getHead()->value.index.secondValue, atoi(cost) });
 
-		while (headNode != nullptr) {
-			if (headNode->value.index.firstValue == citiesHashMap[destination].secondValue->getHead()->value.index.firstValue && headNode->value.index.secondValue == citiesHashMap[destination].secondValue->getHead()->value.index.secondValue) {
-				//Element is a neighbour
-				if (headNode->value.cost > cost) {
-					headNode->value.cost = cost;
-					isNeighbour = true;
-				}
-			}
-			headNode = headNode->next;
-		}
-		if (!isNeighbour) {
-			currentList->addLast(City{ citiesHashMap[destination].secondValue->getHead()->value.index.firstValue, citiesHashMap[destination].secondValue->getHead()->value.index.secondValue, cost });
-		}
 		delete[] source;
 		delete[] destination;
 	}
@@ -121,12 +116,11 @@ void Parser::getQueries() {
 				}
 				counter = temp.secondValue.secondValue[counter];
 			}
-				for (int i = reconstructedPath.getSize() - 2; i >= 0; i--) {
+			for (int i = reconstructedPath.getSize() - 2; i >= 0; i--) {
 					std::cout << reconstructedPath[i] << " ";
-				}
-			
 			}
-		std::cout << '\n';
+		}
+		std::cout << std::endl;
 	}
 }
 
@@ -273,7 +267,6 @@ Pair<int, Pair<int, myVector<int>>> Parser::djikstra(Pair<int, DoubleLinkedList<
 	myVector<int> distances;
 	distances.reserveNewCapacity(this->amountOfCities);
 	paths.reserveNewCapacity(this->amountOfCities);
-
 	for (size_t i = 0; i < this->amountOfCities; i++) {
 		distances.push_back(INT_MAX);
 		paths.push_back(-1);
@@ -281,7 +274,10 @@ Pair<int, Pair<int, myVector<int>>> Parser::djikstra(Pair<int, DoubleLinkedList<
 	distances[source.firstValue] = 0;
 
 	myPriorityQueue queue;
+	if (!areThereRoads)
+		queue.heap.reserveNewCapacity(100000);
 	queue.push(Pair<int, int>{0, source.firstValue});
+
 
 	while (!queue.empty()) {
 		//Second value is index in vector of cities
@@ -307,6 +303,9 @@ Pair<int, Pair<int, myVector<int>>> Parser::djikstra(Pair<int, DoubleLinkedList<
 			const char* cityName = this->citiesIndexHashMap[currentCityIndex];
 			int v = this->citiesHashMap[cityName].firstValue; // v - index of neighbour in city vector
 			int weight = headNode->value.cost;
+			if (!areThereRoads && distances[u] + weight >= distances[v] - 100) {
+				break;
+			}
 			if (distances[u] != INT_MAX && distances[v] > distances[u] + weight) {
 				distances[v] = distances[u] + weight;
 				paths[v] = u;
