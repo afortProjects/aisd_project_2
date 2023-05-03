@@ -13,7 +13,7 @@ private:
     void sift_down(int i);
 
 public:
-    myPriorityQueue() {}
+    myPriorityQueue();
 
     void push(Pair<int, int> n);
     void pop();

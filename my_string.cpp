@@ -26,12 +26,19 @@ myString::~myString() {
 
 
 myString& myString::operator=(const myString& other) {
-    size = other.size;
-    capacity = other.capacity;
-    delete[] buffer;
-    buffer = new char[capacity];
-    memcpy(buffer, other.buffer, size);
-    buffer[size] = '\0';
+    if (this == &other) return *this;
+    if (other.size + 1 <= capacity) { 
+        size = other.size;
+        strcpy(buffer, other.buffer);
+    }
+    else {
+        size = other.size;
+        capacity = other.capacity + STRING_BUFFER;
+        delete[] buffer;
+        buffer = new char[capacity];
+        memcpy(buffer, other.buffer, size);
+        buffer[size] = '\0';
+    }
     return *this;
 }
 
@@ -89,12 +96,13 @@ myString& myString::operator+=(const char* str) {
     if (size + strLength + 1 > capacity) {
         capacity = size + strLength + STRING_BUFFER;
         char* newBuffer = new char[capacity];
-        strcpy(newBuffer, buffer);
+        memcpy(newBuffer, buffer, size);
         delete[] buffer;
         buffer = newBuffer;
     }
-    strcat(buffer, str);
+    memcpy(buffer + size, str, strLength);
     size += strLength;
+    buffer[size] = '\0';
     return *this;
 }
 

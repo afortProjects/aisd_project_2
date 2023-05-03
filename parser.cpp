@@ -108,10 +108,24 @@ void Parser::getQueries() {
 		}
 		choice = atoi(temp.str());
 
-		Pair<int, myString> temp = djikstra(citiesHashMap[tempSource.str()], citiesHashMap[tempDestination.str()]);
-		std::cout << temp.firstValue;
-		if (choice == 1)
-			std::cout << " " << temp.secondValue;
+		Pair<int, Pair<int, myVector<int>>> temp = djikstra(citiesHashMap[tempSource.str()], citiesHashMap[tempDestination.str()]);
+		std::cout << temp.firstValue << " ";
+		if (choice == 1) {
+			int counter = temp.secondValue.firstValue;
+			myVector<const char*> reconstructedPath;
+			while (counter != -1) {
+				if (counter != temp.secondValue.firstValue) {
+					Pair<int, int> indexOfFoundCity{ citiesVector[counter]->getHead()->value.index.firstValue, citiesVector[counter]->getHead()->value.index.secondValue };
+					reconstructedPath.push_back(citiesIndexHashMap[indexOfFoundCity]);
+				}
+				counter = temp.secondValue.secondValue[counter];
+			}
+				for (int i = reconstructedPath.getSize() - 2; i >= 0; i--) {
+					//if (reconstructedPath.getSize() - 2 > reconstructedPath.getSize()) break;
+					std::cout << reconstructedPath[i] << " ";
+				}
+			
+			}
 		std::cout << '\n';
 	}
 }
@@ -287,8 +301,9 @@ DoubleLinkedList<City>* Parser::bfs(int sourceI, int sourceJ) {
 	return adjencies;
 }
 
-Pair<int, myString> Parser::djikstra(Pair<int, DoubleLinkedList<City>*> source, Pair<int, DoubleLinkedList<City>*> dest) {
+Pair<int, Pair<int, myVector<int>>> Parser::djikstra(Pair<int, DoubleLinkedList<City>*> source, Pair<int, DoubleLinkedList<City>*> dest) {
 	myVector<myString> shortestPath;
+	myVector<int> paths;
 	myVector<int> distances;
 	myString tempPath;
 	distances.reserveNewCapacity(this->amountOfCities);
@@ -296,7 +311,8 @@ Pair<int, myString> Parser::djikstra(Pair<int, DoubleLinkedList<City>*> source, 
 
 	for (size_t i = 0; i < this->amountOfCities; i++) {
 		distances.push_back(INT_MAX);
-		shortestPath.push_back("");
+		shortestPath.push_back("" );
+		paths.push_back(-1);
 	}
 	distances[source.firstValue] = 0;
 
@@ -317,12 +333,14 @@ Pair<int, myString> Parser::djikstra(Pair<int, DoubleLinkedList<City>*> source, 
 		queue.pop();
 
 		if (u == dest.firstValue) {
-			return Pair<int, myString> {distances[u], shortestPath[u]};
+
+			return Pair<int, Pair<int, myVector<int>>> {distances[u], Pair<int, myVector<int>> {u, paths}};
 		}
 
 		if (distances[u] < temp.firstValue) continue; // TODO: CHECK
 
 		currentList = this->citiesVector[u];
+
 		headNode = currentList->getHead();
 
 		headNode = headNode->next;
@@ -335,19 +353,14 @@ Pair<int, myString> Parser::djikstra(Pair<int, DoubleLinkedList<City>*> source, 
 			weight = headNode->value.cost;
 			if (distances[u] != INT_MAX && distances[v] > distances[u] + weight) {
 				distances[v] = distances[u] + weight;
-				tempPath = shortestPath[u];
-				if (strcmp(cityName, destCity) != 0 ) {
-					tempPath += cityName;
-					tempPath += ' ';
-				}
-				shortestPath[v] = tempPath;
+				paths[v] = u;
 				queue.push(Pair<int, int>{distances[v], v});
 			}
 			headNode = headNode->next;
 		}
 
 	}
-	return Pair<int, myString> {-1, ""};
+	return Pair<int, Pair<int, myVector<int>>>();
 }
 
 void Parser::createDataStructures() {

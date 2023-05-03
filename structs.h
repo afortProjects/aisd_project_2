@@ -7,8 +7,8 @@ template<typename T, typename K> struct Pair {
 	K secondValue;
 
 	Pair() {
-		this->firstValue = 0;
-		this->secondValue = 0;
+		//this->firstValue = 0;
+		//this->secondValue = 0;
 	}
 
 	Pair(T _firstValue, K _secondValue) {
@@ -47,7 +47,7 @@ struct City {
 	City(int i, int j) : index(Pair<int, int>{i, j}) {
 	}
 
-	City(int i, int j, int cost) : index(Pair<int, int>{i, j}), cost(cost) {
+	City(int i, int j, int _cost) : index(Pair<int, int>{i, j}), cost(_cost) {
 	}
 
 

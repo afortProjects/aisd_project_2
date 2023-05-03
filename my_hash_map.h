@@ -39,6 +39,7 @@ public:
 		while (*dest) {
 			hash = ((hash << HASH_STRING_PRECISION) + hash) + (*dest++);
 		}
+		//delete dest;
 		return hash % TABLE_SIZE;
 	}
 

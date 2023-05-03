@@ -1,5 +1,8 @@
 #include "my_priority_queue.h"
 
+myPriorityQueue::myPriorityQueue() {
+}
+
 void myPriorityQueue::sift_up(int i)
 {
     //First value is cost second value is index in vector
