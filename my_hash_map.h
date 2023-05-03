@@ -6,7 +6,6 @@
 #include <iostream>
 #include <cstring>
 
-
 template <typename Key, typename Value>
 class myHashMap {
 public:
@@ -35,26 +34,24 @@ public:
 		strcpy(dest, str);
 		dest[strlen(str)] = '\0';
 
-		unsigned int hash = 5381;
+		unsigned int hash = HASH_STRING_VALUE;
+
 		while (*dest) {
-			hash = ((hash << 5) + hash) + (*dest++);
+			hash = ((hash << HASH_STRING_PRECISION) + hash) + (*dest++);
 		}
 		return hash % TABLE_SIZE;
 	}
 
 	unsigned int hash_int(const int number) {
-		unsigned int hash = 2166136261u; // FNV offset basis
-
-		// XOR-fold the hash for each byte of the integer
+		unsigned int hash = HASH_INT_START_VALUE;
 		for (unsigned int i = 0; i < sizeof(int); ++i) {
-			hash ^= (unsigned int)(number >> (i * 8)) & 0xFFu;
-			hash *= 16777619u; // FNV prime
+			hash ^= (unsigned int)(number >> (i * HASH_INT_PRECISION)) & SECOND_HASH_INT_VALUE;
+			hash *= HASH_INT_VALUE;
 		}
-
 		return hash % TABLE_SIZE;
 	}
 
-	void add(const Pair<int, int> newKey, const char*& newValue) {
+	void add(const Pair<int, int>& newKey, const char*& newValue) {
 		size_t hashValue = hash_int(newKey.firstValue) % TABLE_SIZE;
 		myHashNode< Pair<int, int>, const char*>* prev = NULL;
 		myHashNode<Pair<int, int>, const char*>* entry = table[hashValue];
@@ -127,7 +124,7 @@ public:
 		}
 	}
 
-	Pair<int, DoubleLinkedList<City>*> operator[](const char* _key) {
+	Pair<int, DoubleLinkedList<City>*>& operator[](const char* _key) {
 		size_t hashValue = hash_string(_key);
 		myHashNode<Key, Value>* entry = table[hashValue];
 
@@ -138,10 +135,11 @@ public:
 			}
 			entry = entry->getNext();
 		}
-		return Pair<int, DoubleLinkedList<City>*>();
+		Pair<int, DoubleLinkedList<City>*> p{};
+		return p;
 	}
 
-	const char* operator[](Pair<int, int> _key) {
+	const char* operator[](Pair<int, int>& _key) {
 		size_t hashValue = hash_int(_key.firstValue) % TABLE_SIZE;
 
 		myHashNode<Key, Value>* entry = table[hashValue];

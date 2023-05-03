@@ -118,11 +118,11 @@ public:
         }
     }
 
-    Node<T>* getHead() {
+    Node<T>*& getHead() {
         return head;
     }
 
-    Node<T>* getTail() {
+    Node<T>*& getTail() {
         return tail;
     }
 
